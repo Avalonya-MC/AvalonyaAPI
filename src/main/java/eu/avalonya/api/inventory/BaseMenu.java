@@ -1,5 +1,6 @@
 package eu.avalonya.api.inventory;
 
+import eu.avalonya.api.items.CustomItemStack;
 import fr.mrmicky.fastinv.FastInv;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -14,74 +15,27 @@ import java.util.function.Consumer;
 
 public abstract class BaseMenu extends FastInv {
 
+    public static ItemStack DEFAULT_BORDER_ITEM = new CustomItemStack(Material.BLUE_STAINED_GLASS_PANE, " ");
+    public static ItemStack DEFAULT_BACKGROUND_ITEM = new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, " ");
+    public static ItemStack DEFAULT_CLOSE_ITEM = new CustomItemStack(Material.BARRIER, "§cFermer");
+
     public BaseMenu(int size, String title) {
         super(size, title);
 
-        setBorderItem(new ItemStack(Material.BLUE_STAINED_GLASS_PANE), meta -> {
-            meta.displayName(Component.text(" "));
-        });
+        for (int i : getBorders()) {
+            setItem(i, DEFAULT_BORDER_ITEM, e -> e.setCancelled(true));
+        }
 
-        setBackgroundItem(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), meta -> {
-            meta.displayName(Component.text(" "));
-        });
+        for (int i : getInventory().all(Material.AIR).keySet()) {
+            setItem(i, DEFAULT_BACKGROUND_ITEM, e -> e.setCancelled(true));
+        }
 
-        setCloseItem(new ItemStack(Material.BARRIER), meta -> {
-            meta.displayName(Component.text("§cFermer"));
-        });
+        setItem(8, DEFAULT_CLOSE_ITEM, e -> e.getInventory().close());
 
         init();
     }
 
     public abstract void init();
-
-    public void setBorderItem(@Nullable ItemStack itemStack, @Nullable Consumer<ItemMeta> consumer) {
-        if (itemStack == null) {
-            return;
-        }
-
-        if (consumer != null) {
-            final ItemMeta meta = itemStack.getItemMeta();
-            consumer.accept(meta);
-            itemStack.setItemMeta(meta);
-        }
-
-        for (int slot : getBorders()) {
-            setItem(slot, itemStack, e -> e.setCancelled(true));
-        }
-    }
-
-    public void setBackgroundItem(@Nullable ItemStack itemStack, @Nullable Consumer<ItemMeta> consumer) {
-        if (itemStack == null) {
-            return;
-        }
-
-        if (consumer != null) {
-            final ItemMeta meta = itemStack.getItemMeta();
-            consumer.accept(meta);
-            itemStack.setItemMeta(meta);
-        }
-
-        for (int slot : getInventory().all(Material.AIR).keySet()) {
-            setItem(slot, itemStack, e -> e.setCancelled(true));
-        }
-    }
-
-    public void setCloseItem(@Nullable ItemStack itemStack, @Nullable Consumer<ItemMeta> consumer) {
-        if (itemStack == null) {
-            return;
-        }
-
-        if (consumer != null) {
-            final ItemMeta meta = itemStack.getItemMeta();
-            consumer.accept(meta);
-            itemStack.setItemMeta(meta);
-        }
-
-        setItem(8, itemStack, e -> {
-            e.setCancelled(true);
-            e.getWhoClicked().closeInventory();
-        });
-    }
 
     public void open(HumanEntity humanEntity) {
         super.open((Player) humanEntity);
