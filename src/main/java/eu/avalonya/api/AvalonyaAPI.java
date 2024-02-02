@@ -11,7 +11,7 @@ public class AvalonyaAPI extends JavaPlugin
 {
 
     private static AvalonyaAPI instance;
-    public static SQL sqlInstance;
+    private static SQL sqlInstance;
 
     @Override
     public void onEnable()
@@ -34,6 +34,11 @@ public class AvalonyaAPI extends JavaPlugin
     public static AvalonyaAPI getInstance()
     {
         return instance;
+    }
+
+    public static SQL getSqlInstance()
+    {
+        return sqlInstance;
     }
 
 }
