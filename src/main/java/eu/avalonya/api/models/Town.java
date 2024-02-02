@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Town model class that represents a town in the Avalonya api.
+ */
 public class Town implements ItemAccess {
 
     private String name;

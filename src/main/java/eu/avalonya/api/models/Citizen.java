@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+/**
+ * Citizen model class that represents a citizen in the Avalonya api.
+ */
 public class Citizen implements ItemAccess {
 
     private OfflinePlayer player;
