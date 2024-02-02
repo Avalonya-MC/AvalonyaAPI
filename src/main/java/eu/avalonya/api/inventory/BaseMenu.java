@@ -20,10 +20,14 @@ public abstract class BaseMenu extends FastInv {
     public final static ItemStack DEFAULT_CLOSE_ITEM = new CustomItemStack(Material.BARRIER, "§cFermer");
 
     public BaseMenu(int size, String title) {
+        this(size, title, DEFAULT_BORDER_ITEM);
+    }
+
+    public BaseMenu(int size, String title, ItemStack borderItem) {
         super(size, title);
 
         for (int i : getBorders()) {
-            setItem(i, DEFAULT_BORDER_ITEM, e -> e.setCancelled(true));
+            setItem(i, borderItem, e -> e.setCancelled(true));
         }
 
         for (int i : getInventory().all(Material.AIR).keySet()) {
