@@ -3,7 +3,7 @@ package eu.avalonya.api.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class Utils {
+public class MessageUtils {
 
 
     /**

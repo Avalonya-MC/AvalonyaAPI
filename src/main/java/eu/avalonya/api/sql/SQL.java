@@ -1,6 +1,6 @@
 package eu.avalonya.api.sql;
 
-import eu.avalonya.api.utils.Utils;
+import eu.avalonya.api.utils.MessageUtils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,12 +32,12 @@ public class SQL
             try
             {
                 this.connection = DriverManager.getConnection(this.urlbase + this.host + "/" + this.db + "?autoreconnect=true", this.user, this.pass);
-                Utils.sendConsoleMsg("&2[SQL] Connexion BDD OK!");
+                MessageUtils.sendConsoleMsg("&2[SQL] Connexion BDD OK!");
             }
             catch (SQLException e)
             {
                 //e.printStackTrace();
-                Utils.sendConsoleMsg("&c[SQL] Erreur connexion !");
+                MessageUtils.sendConsoleMsg("&c[SQL] Erreur connexion !");
             }
         }
     }
@@ -49,11 +49,11 @@ public class SQL
             try
             {
                 this.connection.close();
-                Utils.sendConsoleMsg("&2[SQL] Deconnexion BDD OK !");
+                MessageUtils.sendConsoleMsg("&2[SQL] Deconnexion BDD OK !");
             }
             catch (SQLException e)
             {
-                Utils.sendConsoleMsg("&c[SQL] Erreur deconnexion !");
+                MessageUtils.sendConsoleMsg("&c[SQL] Erreur deconnexion !");
             }
         }
     }
