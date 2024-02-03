@@ -28,14 +28,16 @@ public abstract class PaginateMenu extends BaseMenu {
         final List<ItemStack> content = getItems();
         int start = page * ITEMS_PER_PAGE;
         int end = Math.min((page + 1) * ITEMS_PER_PAGE, content.size());
+        int[] slots = getContent();
 
-        for (int i = start; i < end; i++) {
-            setItem(i - start, content.get(i));
+        for (int i = 0; i < ITEMS_PER_PAGE; i++) {
+            setItem(slots[i], i + start < end ? content.get(i + start) : null, event -> event.setCancelled(true));
         }
 
         if (page > 0) {
             setItem(48, PREVIOUS_PAGE_ITEM, event -> {
                 page--;
+                update();
                 this.open(event.getWhoClicked());
             });
         } else {
@@ -45,6 +47,7 @@ public abstract class PaginateMenu extends BaseMenu {
         if (end < content.size()) {
             setItem(50, NEXT_PAGE_ITEM, event -> {
                 page++;
+                update();
                 this.open(event.getWhoClicked());
             });
         } else {
