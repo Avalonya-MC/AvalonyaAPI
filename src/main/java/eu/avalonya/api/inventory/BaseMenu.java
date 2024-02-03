@@ -30,8 +30,9 @@ public abstract class BaseMenu extends FastInv {
             setItem(i, borderItem, e -> e.setCancelled(true));
         }
 
-        for (int i : getInventory().all(Material.AIR).keySet()) {
-            setItem(i, DEFAULT_BACKGROUND_ITEM, e -> e.setCancelled(true));
+        for (int i = 0; i < size; i++) {
+            if (getInventory().getItem(i) == null)
+                setItem(i, DEFAULT_BACKGROUND_ITEM, e -> e.setCancelled(true));
         }
 
         setItem(8, DEFAULT_CLOSE_ITEM, e -> e.getInventory().close());
