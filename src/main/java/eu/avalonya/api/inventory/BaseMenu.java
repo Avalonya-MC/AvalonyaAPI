@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public abstract class BaseMenu extends FastInv {
 
@@ -44,6 +45,12 @@ public abstract class BaseMenu extends FastInv {
 
     public void open(HumanEntity humanEntity) {
         super.open((Player) humanEntity);
+    }
+
+    public int[] getContent() {
+        int size = this.getInventory().getSize();
+        return IntStream.range(0, size).filter(i -> !(size < 27 || i < 9
+                || i % 9 == 0 || (i - 8) % 9 == 0 || i > size - 9)).toArray();
     }
 
 }
