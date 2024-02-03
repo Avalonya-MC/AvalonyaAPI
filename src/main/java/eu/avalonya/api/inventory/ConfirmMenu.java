@@ -2,6 +2,7 @@ package eu.avalonya.api.inventory;
 
 import eu.avalonya.api.items.CustomItemStack;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ConfirmMenu extends BaseMenu {
@@ -16,15 +17,15 @@ public abstract class ConfirmMenu extends BaseMenu {
         super(27, name, borderRed ? BaseMenu.DEFAULT_BORDER_ITEM : RED_BORDER_ITEM);
 
         setItem(14, CONFIRM_ITEM, event -> {
-            onConfirm();
+            onConfirm((Player) event.getWhoClicked());
         });
 
         setItem(15, CANCEL_ITEM, event -> {
-            onCancel();
+            onCancel((Player) event.getWhoClicked());
         });
     }
 
-    protected abstract void onConfirm();
-    protected abstract void onCancel();
+    protected abstract void onConfirm(Player player);
+    protected abstract void onCancel(Player player);
 
 }
