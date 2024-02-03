@@ -1,4 +1,8 @@
 package eu.avalonya.api.sql;
 
-public class Migration {
+public abstract class Migration
+{
+
+    public abstract void execute();
+
 }
