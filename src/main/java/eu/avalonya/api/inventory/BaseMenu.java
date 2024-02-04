@@ -49,6 +49,11 @@ public abstract class BaseMenu extends FastInv {
 
     public int[] getContent() {
         int size = this.getInventory().getSize();
+
+        // On verifie que i ne soit pas un multiple de 9 (bordure gauche)
+        // ou un multiple de 9 - 1 (bordure droite)
+        // ou inférieur à 9 (bordure haute)
+        // ou supérieur à size - 9 (bordure basse)
         return IntStream.range(0, size).filter(i -> !(size < 27 || i < 9
                 || i % 9 == 0 || (i - 8) % 9 == 0 || i > size - 9)).toArray();
     }

@@ -31,6 +31,7 @@ public abstract class PaginateMenu extends BaseMenu {
         int[] slots = getContent();
 
         for (int i = 0; i < ITEMS_PER_PAGE; i++) {
+            // Si l'index est inférieur à la taille de la liste, on ajoute l'item à l'inventaire sinon on ajoute rien
             setItem(slots[i], i + start < end ? content.get(i + start) : null, event -> event.setCancelled(true));
         }
 
