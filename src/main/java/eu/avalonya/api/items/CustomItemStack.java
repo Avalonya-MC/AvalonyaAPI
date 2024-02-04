@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import eu.avalonya.api.AvalonyaAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -120,20 +121,17 @@ public class CustomItemStack extends ItemStack {
             return;
         }
 
-        final List<String> lore = itemMeta.getLore();
+        final TextReplacementConfig replacementConfig = TextReplacementConfig.builder().matchLiteral(old).replacement(newString)
+                .build();
 
-        if (lore != null) {
-            final List<TextComponent> lines = new ArrayList<>();
+        List<Component> lore = itemMeta.lore();
+        if (lore != null)
+            itemMeta.lore(lore.stream().map(c -> c.replaceText(replacementConfig)).toList());
 
-            for (String s : lore) {
-                lines.add(Component.text(s.replace(old, newString)));
-            }
-            itemMeta.lore(lines);
-        }
+        final Component displayName = itemMeta.displayName();
+        if (displayName != null)
+            itemMeta.displayName(displayName.replaceText(replacementConfig));
 
-        if (itemMeta.displayName() != null) {
-            itemMeta.displayName(Component.text(itemMeta.getDisplayName().replace(old, newString)));
-        }
         setItemMeta(itemMeta);
     }
 
