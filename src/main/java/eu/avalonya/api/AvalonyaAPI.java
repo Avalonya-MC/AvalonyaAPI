@@ -1,10 +1,9 @@
 package eu.avalonya.api;
 
 import fr.mrmicky.fastinv.FastInvManager;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class AvalonyaAPI extends JavaPlugin implements CommandExecutor
+public class AvalonyaAPI extends JavaPlugin
 {
 
     private static AvalonyaAPI instance;
