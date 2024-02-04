@@ -1,6 +1,7 @@
 package eu.avalonya.api.items;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
+import eu.avalonya.api.AvalonyaAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -88,7 +89,7 @@ public class CustomItemStack extends ItemStack {
                 playerTextures.setSkin(new URL(BASE_URL + texture));
                 profile.setTextures(playerTextures);
             } catch (MalformedURLException e) {
-                System.out.printf("Error while setting texture: %s%n", e.getMessage());
+                AvalonyaAPI.getInstance().getLogger().warning("Error while setting texture: " + e.getMessage());
             }
 
             meta.displayName(Component.text(name));
