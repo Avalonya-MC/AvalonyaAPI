@@ -15,6 +15,7 @@ import org.bukkit.profile.PlayerTextures;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -77,13 +78,9 @@ public class CustomItemStack extends ItemStack {
     public CustomItemStack(String texture, String name, String ...lore) {
         this(Material.PLAYER_HEAD, itemMeta -> {
             final SkullMeta meta = (SkullMeta) itemMeta;
-            final List<TextComponent> lines = new ArrayList<>();
+            final List<TextComponent> lines = Arrays.stream(lore).map(Component::text).toList();
             final PlayerProfile profile = Bukkit.createProfileExact(UUID.randomUUID(), null);
             final PlayerTextures playerTextures = profile.getTextures();
-
-            for (String s : lore){
-                lines.add(Component.text(s));
-            }
 
             try {
                 playerTextures.setSkin(new URL(BASE_URL + texture));
