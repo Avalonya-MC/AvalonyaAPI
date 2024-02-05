@@ -40,7 +40,7 @@ public class AvalonyaAPI extends JavaPlugin
         }
         else
         {
-           getLogger().warning("`migration` table does not exists. Run the creation.");
+           getLogger().warning("`migration_version` table does not exists. Run the creation.");
             Migration migration1;
             try
             {

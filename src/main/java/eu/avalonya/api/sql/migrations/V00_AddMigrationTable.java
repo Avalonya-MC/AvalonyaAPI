@@ -17,7 +17,6 @@ public class V00_AddMigrationTable extends Migration
     private String uniqueKeyRequest = """               
             ALTER TABLE `migration_version`
               ADD UNIQUE KEY `i_version` (`version`);
-            COMMIT;
     """;
 
     @Override
@@ -25,6 +24,7 @@ public class V00_AddMigrationTable extends Migration
     {
         try
         {
+            System.out.println("Executing AddMigrationVersion");
             // Merge 2 requests to avoid disconnect after first request
             PreparedStatement r = AvalonyaAPI.getSqlInstance().getConnection().prepareStatement(this.createTableRequest);
             r.execute();
