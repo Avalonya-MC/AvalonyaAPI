@@ -1,5 +1,6 @@
 package eu.avalonya.api;
 
+import fr.mrmicky.fastinv.FastInvManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AvalonyaAPI extends JavaPlugin
@@ -11,6 +12,8 @@ public class AvalonyaAPI extends JavaPlugin
     public void onEnable()
     {
         instance = this;
+
+        FastInvManager.register(this);
     }
 
     @Override
@@ -23,5 +26,4 @@ public class AvalonyaAPI extends JavaPlugin
     {
         return instance;
     }
-
 }
