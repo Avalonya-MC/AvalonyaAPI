@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class Notification {
 
+    private final String id;
     private final String message;
     private String expireMessage;
     private final int delay;
@@ -17,31 +18,39 @@ public class Notification {
 
     /**
      * Crée une notification sans delay de reponse
+     * @param id identifiant de la notification
      * @param message message à envoyer
      */
-    public Notification(String message) {
-        this(message, 0);
+    public Notification(String id, String message) {
+        this(id, message, 0);
     }
 
     /**
      * Crée une notification avec un delay de reponse
+     * @param id identifiant de la notification
      * @param message message à envoyer
      * @param delay delay de reponse en secondes
      */
-    public Notification(String message, int delay) {
-        this(message, null, delay);
+    public Notification(String id, String message, int delay) {
+        this(id, message, null, delay);
     }
 
     /**
      * Crée une notification avec un message d'expiration
+     * @param id identifiant de la notification
      * @param message message à envoyer
      * @param expireMessage message à envoyer si la notification est expirée
      * @param delay delay de reponse en secondes
      */
-    public Notification(String message, String expireMessage, int delay) {
+    public Notification(String id, String message, String expireMessage, int delay) {
+        this.id = id;
         this.message = message;
         this.expireMessage = expireMessage;
         this.delay = delay;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getMessage() {
