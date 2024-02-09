@@ -5,6 +5,7 @@ import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
 import org.bukkit.configuration.file.FileConfiguration;
+import fr.mrmicky.fastinv.FastInvManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AvalonyaAPI extends JavaPlugin
@@ -17,6 +18,7 @@ public class AvalonyaAPI extends JavaPlugin
     public void onEnable()
     {
         instance = this;
+
         CustomConfigFile sqlConfig = new CustomConfigFile("database.yml");
 
         FileConfiguration fSql = ConfigFilesManager.getFile("sql").get();
@@ -30,6 +32,8 @@ public class AvalonyaAPI extends JavaPlugin
     public void manageMigration()
     {
         MigrationUtils.checkCurrentVersion();
+
+        FastInvManager.register(this);
     }
 
     @Override
@@ -48,4 +52,7 @@ public class AvalonyaAPI extends JavaPlugin
         return sqlInstance;
     }
 
+    public static AvalonyaAPI getInstance() {
+        return instance;
+    }
 }
