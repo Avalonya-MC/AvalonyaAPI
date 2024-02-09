@@ -9,22 +9,14 @@ Cette classe Java doit extends la classe `Migration`. Il faut implémenter la fo
 Par exemple :
 
 ```java
-  @Override
-    public void execute()
-    {
-        // Logique spécifique pour AddNewTable
-        AvalonyaAPI.getInstance().getLogger().info(("Executing AddNewTable"));
-        try
-        {
-            PreparedStatement r = AvalonyaAPI.getSqlInstance().getConnection().prepareStatement(this.createNewTable);
-            r.execute();
-            r.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
+  import eu.avalonya.api.AvalonyaAPI;
+
+@Override
+public void execute() 
+{
+    AvalonyaAPI.getInstance().getLogger().info("Executing AddNewTable");
+    this.execute(this.createNewTable);
+}
 ```
 
 Ainsi que l'attribut de classe `createNewTable` :

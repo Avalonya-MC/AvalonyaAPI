@@ -7,8 +7,6 @@ import eu.avalonya.api.utils.CustomConfigFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
-
 public class AvalonyaAPI extends JavaPlugin
 {
 
