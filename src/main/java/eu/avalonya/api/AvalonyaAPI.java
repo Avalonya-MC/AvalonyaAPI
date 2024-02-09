@@ -52,7 +52,4 @@ public class AvalonyaAPI extends JavaPlugin
         return sqlInstance;
     }
 
-    public static AvalonyaAPI getInstance() {
-        return instance;
-    }
 }
