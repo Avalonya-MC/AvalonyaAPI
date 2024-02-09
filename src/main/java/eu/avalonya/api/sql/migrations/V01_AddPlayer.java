@@ -19,7 +19,7 @@ public class V01_AddPlayer extends Migration
     public void execute()
     {
         // Logique spécifique pour AddPlayer
-        System.out.println("Executing AddPlayerMigration");
+        AvalonyaAPI.getInstance().getLogger().info(("Executing AddPlayerMigration"));
         try
         {
             PreparedStatement r = AvalonyaAPI.getSqlInstance().getConnection().prepareStatement(this.createTablePlayer);

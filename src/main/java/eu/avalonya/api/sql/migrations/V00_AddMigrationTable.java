@@ -24,7 +24,7 @@ public class V00_AddMigrationTable extends Migration
     {
         try
         {
-            System.out.println("Executing AddMigrationVersion");
+            AvalonyaAPI.getInstance().getLogger().info("Executing AddMigrationVersion");
             // Merge 2 requests to avoid disconnect after first request
             PreparedStatement r = AvalonyaAPI.getSqlInstance().getConnection().prepareStatement(this.createTableRequest);
             r.execute();

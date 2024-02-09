@@ -6,8 +6,7 @@ public enum MigrationMapping
 {
 
     v00_MIGRATION_TABLE(0, V00_AddMigrationTable.class),
-    V01_ADD_PLAYER(1, V01_AddPlayer.class),
-    V02_ADDTruc(2, V02_Test.class);
+    V01_ADD_PLAYER(1, V01_AddPlayer.class);
 
     private final int id;
     private final Class<? extends Migration> migrationClass;
