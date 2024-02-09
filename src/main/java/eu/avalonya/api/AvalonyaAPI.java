@@ -1,15 +1,12 @@
 package eu.avalonya.api;
 
-import eu.avalonya.api.sql.Migration;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
-import eu.avalonya.api.sql.migrations.MigrationMapping;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static eu.avalonya.api.sql.MigrationUtils.insertOrUpdateCurrentMigrationVersion;
 
 
 public class AvalonyaAPI extends JavaPlugin

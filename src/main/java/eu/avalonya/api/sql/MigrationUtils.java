@@ -3,7 +3,6 @@ package eu.avalonya.api.sql;
 import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.sql.migrations.MigrationMapping;
 
-import java.io.IOException;
 import java.sql.*;
 
 public class MigrationUtils
