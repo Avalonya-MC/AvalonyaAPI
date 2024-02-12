@@ -17,6 +17,7 @@ public class Citizen implements ItemAccess {
     private ItemStack playerHead;
     private Town town;
     private long joinedAt;
+    private Role role;
 
     public Citizen(OfflinePlayer player) {
         this.player = player;
@@ -29,6 +30,8 @@ public class Citizen implements ItemAccess {
             itemMeta.displayName(Component.text("§f" + player.getName()));
             playerHead.setItemMeta(itemMeta);
         }
+
+        this.role = new Role(this);
     }
 
     public boolean isMayor() {
@@ -70,5 +73,7 @@ public class Citizen implements ItemAccess {
     public ItemStack toItemStack() {
         return playerHead;
     }
+
+    public Role getRole(){return role;}
 
 }

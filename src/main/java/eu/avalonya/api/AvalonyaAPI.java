@@ -1,6 +1,5 @@
 package eu.avalonya.api;
 
-import eu.avalonya.api.command.BaseCommand;
 import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.command.admin.SetRankCommand;
 import eu.avalonya.api.sql.MigrationUtils;
