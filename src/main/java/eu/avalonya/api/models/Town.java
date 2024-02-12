@@ -10,9 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Town model class that represents a town in the Avalonya api.
@@ -36,6 +34,7 @@ public class Town implements ItemAccess {
     private final List<Town> enemies = new ArrayList<>();
     private final List<Town> allies = new ArrayList<>();
     private List<Pattern> bannerPatterns = new ArrayList<>();
+    private Map<String, String> roles = new HashMap<>();
 
     public Town(String name, Citizen mayor) {
         this.name = name;
@@ -47,6 +46,9 @@ public class Town implements ItemAccess {
         );
 
         spawn = createSpawn();
+
+        roles.put("Maire", "§6");
+        roles.put("Citoyen", "§9");
     }
 
     public String getName() {
@@ -247,6 +249,9 @@ public class Town implements ItemAccess {
     public List<Pattern> getBannerMeta() {
         return bannerPatterns;
     }
+
+    public Map<String, String> getRoles() {return roles;}
+    
 
     @Override
     public ItemStack toItemStack() {

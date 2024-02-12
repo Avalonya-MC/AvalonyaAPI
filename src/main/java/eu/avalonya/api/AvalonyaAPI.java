@@ -1,5 +1,6 @@
 package eu.avalonya.api;
 
+import eu.avalonya.api.models.Citizen;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
@@ -27,6 +28,7 @@ public class AvalonyaAPI extends JavaPlugin
         AvalonyaAPI.sqlInstance.connection();
 
         manageMigration();
+
     }
 
     public void manageMigration()
