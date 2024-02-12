@@ -14,7 +14,7 @@ public class Notification {
     private String expireMessage;
     private final int delay;
     private final Date createdAt = new Date();
-    private BukkitTask task;
+    private BukkitTask task = null;
 
     /**
      * Crée une notification sans delay de reponse
@@ -22,17 +22,7 @@ public class Notification {
      * @param message message à envoyer
      */
     public Notification(String id, String message) {
-        this(id, message, 0);
-    }
-
-    /**
-     * Crée une notification avec un delay de reponse
-     * @param id identifiant de la notification
-     * @param message message à envoyer
-     * @param delay delay de reponse en secondes
-     */
-    public Notification(String id, String message, int delay) {
-        this(id, message, null, delay);
+        this(id, message, null, 0);
     }
 
     /**
@@ -84,9 +74,20 @@ public class Notification {
 
     public void sendTo(Player player) {
         if (!isExpired()) {
-            task = Bukkit.getScheduler().runTaskLater(AvalonyaAPI.getInstance(), () -> player.sendMessage(expireMessage), delay * 20L);
-            player.sendMessage(message);
+            return;
         }
+
+        if (delay > 0) {
+            task = Bukkit.getScheduler().runTaskLater(AvalonyaAPI.getInstance(), () -> {
+                if (expireMessage != null) {
+                    player.sendMessage(expireMessage);
+                }
+
+                this.destroy();
+                }, delay * 20L);
+        }
+
+        player.sendMessage(message);
     }
 
     public void sendTo(Iterable<Player> players) {
