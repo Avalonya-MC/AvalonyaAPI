@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -34,24 +35,24 @@ public abstract class BaseCommand implements CommandExecutor {
         this(null, SenderType.ALL);
     }
 
-    public BaseCommand(String permission) {
+    public BaseCommand(@Nullable String permission) {
         this(permission, SenderType.ALL);
     }
 
-    public BaseCommand(SenderType senderType) {
+    public BaseCommand(@NotNull SenderType senderType) {
         this(null, senderType);
     }
 
 
-    public BaseCommand(String ...permissions) {
+    public BaseCommand(@Nullable String ...permissions) {
         this(SenderType.ALL, permissions);
     }
 
-    public BaseCommand(String permission, SenderType senderType) {
+    public BaseCommand(@Nullable String permission, @NotNull SenderType senderType) {
         this(senderType, permission);
     }
 
-    public BaseCommand(SenderType senderType, String ...permissions) {
+    public BaseCommand(@NotNull SenderType senderType, @Nullable String ...permissions) {
         this.senderType = senderType;
         this.permissions = permissions;
     }
