@@ -20,10 +20,8 @@ public class Role {
         if (citizen.getTown().getRoles().containsKey(role)){
             this.role = role;
             return true;
-        } else {
-            return false;
         }
-
+        return false;
     }
 
     public String getColor(){
@@ -34,7 +32,4 @@ public class Role {
     public String getRole() {
         return role;
     }
-
-
-
 }

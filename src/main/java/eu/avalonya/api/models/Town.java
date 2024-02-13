@@ -3,6 +3,7 @@ package eu.avalonya.api.models;
 import eu.avalonya.api.items.ItemAccess;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -123,10 +124,12 @@ public class Town implements ItemAccess {
 
     public void addCitizen(Citizen citizen) {
         citizens.add(citizen);
+        citizen.getRole().setRole("Citoyen");
     }
 
     public void removeCitizen(Citizen citizen) {
         citizens.remove(citizen);
+        citizen.getRole().setRole(null);
     }
 
     public List<Citizen> getCitizens() {
@@ -250,8 +253,33 @@ public class Town implements ItemAccess {
         return bannerPatterns;
     }
 
-    public Map<String, String> getRoles() {return roles;}
-    
+    public Map<String, String> getRoles() {
+        return roles;
+    }
+
+    public boolean addRole(String name, String color){
+        if (roles.size() == 5){
+            return false;
+        }
+
+        if (color != "&c" || color != "&e" || color != "&b"){
+            return false;
+        }
+        roles.put(name, color);
+        return true;
+    }
+
+    public boolean removeRole(String role){
+        if (role == "Maire" || role == "Citoyen"){
+            return false;
+        }
+        if (roles.containsKey(role)){
+            roles.remove(role);
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public ItemStack toItemStack() {
