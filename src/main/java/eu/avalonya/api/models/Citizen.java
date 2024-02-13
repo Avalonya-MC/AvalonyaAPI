@@ -74,6 +74,7 @@ public class Citizen implements ItemAccess {
         return playerHead;
     }
 
-    public Role getRole(){return role;}
-
+    public Role getRole(){
+        return role;
+    }
 }
