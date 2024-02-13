@@ -11,8 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class BaseCommand implements CommandExecutor {
+public abstract class BaseCommand implements CommandExecutor, ICommand {
 
     /**
      * Messages
@@ -26,6 +28,7 @@ public abstract class BaseCommand implements CommandExecutor {
      */
     private final SenderType senderType;
     private final String[] permissions;
+    private final Map<String, ICommand> subCommands = new HashMap<>();
 
     /**
      * Constructors
@@ -61,6 +64,11 @@ public abstract class BaseCommand implements CommandExecutor {
         return permissions;
     }
 
+    public void addSubCommand(String name, ICommand command)
+    {
+        subCommands.put(name, command);
+    }
+
     /**
      * Call the abstract method {@link BaseCommand#run(CommandSender, SenderType, String[])}
      */
@@ -87,7 +95,16 @@ public abstract class BaseCommand implements CommandExecutor {
 
         try
         {
-            run(sender, senderType, strings);
+            if (strings.length > 0)
+            {
+                ICommand subCommand = subCommands.get(strings[0]);
+                if (subCommand != null)
+                {
+                    subCommand.run(sender, type, Arrays.copyOfRange(strings, 1, strings.length));
+                    return true;
+                }
+            }
+            run(sender, type, strings);
         }
         catch(Exception e)
         {
@@ -95,8 +112,6 @@ public abstract class BaseCommand implements CommandExecutor {
         }
         return true;
     }
-
-    public abstract void run(CommandSender sender, SenderType senderType, String[] args);
 
     public enum SenderType {
 
