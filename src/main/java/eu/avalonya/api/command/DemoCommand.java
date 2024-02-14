@@ -8,6 +8,7 @@ public class DemoCommand extends BaseCommand
     public DemoCommand()
     {
         addSubCommand("sub", this::subRun);
+        setCooldown(5);
     }
 
     @Override
