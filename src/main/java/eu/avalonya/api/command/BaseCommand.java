@@ -1,21 +1,19 @@
 package eu.avalonya.api.command;
 
+import com.google.common.base.Preconditions;
+import eu.avalonya.api.AvalonyaAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public abstract class BaseCommand implements CommandExecutor, ICommand {
+public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompleter {
 
     /**
      * Messages
@@ -141,6 +139,29 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
             sender.sendMessage(ERROR_OCCURED);
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        Set<String> completions = new HashSet<>();
+
+        if (strings.length == 1)
+        {
+            completions.addAll(subCommands.keySet());
+        }
+
+        return new ArrayList<>(completions);
+    }
+
+    public static void register(@NotNull JavaPlugin plugin, @NotNull String name, @NotNull BaseCommand command) {
+        final PluginCommand pluginCommand = plugin.getCommand(name);
+
+        if (pluginCommand == null) {
+            plugin.getLogger().severe("Impossible de trouver la commande " + name);
+            return;
+        }
+        pluginCommand.setExecutor(command);
+        pluginCommand.setTabCompleter(command);
     }
 
     public enum SenderType {
