@@ -7,6 +7,7 @@ public class DemoCommand extends BaseCommand
 
     public DemoCommand()
     {
+        super("demo");
         addSubCommand("sub", this::subRun);
         setCooldown(5);
     }

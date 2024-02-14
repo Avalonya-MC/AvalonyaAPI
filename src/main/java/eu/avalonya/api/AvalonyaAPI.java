@@ -30,7 +30,7 @@ public class AvalonyaAPI extends JavaPlugin
 
         manageMigration();
 
-        BaseCommand.register(this, "demo", new DemoCommand());
+        BaseCommand.register(this, new DemoCommand());
     }
 
     public void manageMigration()

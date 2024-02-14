@@ -26,8 +26,9 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
     /**
      * Variables
      */
+    private final String name;
     private final SenderType senderType;
-    private final String[] permissions;
+    private final List<String> permissions = new ArrayList<>();
     private final Map<String, ICommand> subCommands = new HashMap<>();
     private int cooldown = 0;
     private final Map<CommandSender, Long> cooldowns = new HashMap<>();
@@ -36,34 +37,39 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
      * Constructors
      */
 
-    public BaseCommand() {
-        this(null, SenderType.ALL);
+    public BaseCommand(@NotNull String name)
+    {
+        this(name, SenderType.ALL);
     }
 
-    public BaseCommand(@Nullable String permission) {
-        this(permission, SenderType.ALL);
-    }
-
-    public BaseCommand(@NotNull SenderType senderType) {
-        this(null, senderType);
-    }
-
-
-    public BaseCommand(@Nullable String ...permissions) {
-        this(SenderType.ALL, permissions);
-    }
-
-    public BaseCommand(@Nullable String permission, @NotNull SenderType senderType) {
-        this(senderType, permission);
-    }
-
-    public BaseCommand(@NotNull SenderType senderType, @Nullable String ...permissions) {
+    public BaseCommand(@NotNull String name, @NotNull SenderType senderType) {
+        this.name = name;
         this.senderType = senderType;
-        this.permissions = permissions;
     }
 
-    public String[] getPermissions() {
+    public String getName()
+    {
+        return name;
+    }
+
+    public List<String> getPermissions()
+    {
         return permissions;
+    }
+
+    public void addPermission(String permission)
+    {
+        permissions.add(permission);
+    }
+
+    public void addPermissions(String... permissions)
+    {
+        this.permissions.addAll(Arrays.asList(permissions));
+    }
+
+    private boolean canExecute(CommandSender sender)
+    {
+        return permissions.stream().anyMatch(sender::hasPermission) || permissions.isEmpty();
     }
 
     public void addSubCommand(String name, ICommand command)
@@ -99,7 +105,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
         }
 
         // Si p == null ou le joueur a la permission ou le joueur est op alors on retourne true
-        boolean hasPerm = Arrays.stream(permissions).anyMatch(p -> p == null || sender.hasPermission(p) || sender.isOp());
+        boolean hasPerm = canExecute(sender);
 
         if (!hasPerm)
         {
@@ -153,11 +159,11 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
         return new ArrayList<>(completions);
     }
 
-    public static void register(@NotNull JavaPlugin plugin, @NotNull String name, @NotNull BaseCommand command) {
-        final PluginCommand pluginCommand = plugin.getCommand(name);
+    public static void register(@NotNull JavaPlugin plugin, @NotNull BaseCommand command) {
+        final PluginCommand pluginCommand = plugin.getCommand(command.getName());
 
         if (pluginCommand == null) {
-            plugin.getLogger().severe("Impossible de trouver la commande " + name);
+            plugin.getLogger().severe("Impossible de trouver la commande " + command.getName());
             return;
         }
         pluginCommand.setExecutor(command);
