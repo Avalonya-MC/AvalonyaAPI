@@ -27,7 +27,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
     private final String name;
     private final SenderType senderType;
     private final List<String> permissions = new ArrayList<>();
-    private final Map<String, ICommand> subCommands = new HashMap<>();
+    private final Map<String, SubCommand> subCommands = new HashMap<>();
     private int cooldown = 0;
     private final Map<CommandSender, Long> cooldowns = new HashMap<>();
 
@@ -72,7 +72,29 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
 
     public void addSubCommand(String name, ICommand command)
     {
-        subCommands.put(name, command);
+        addSubCommand(name, command, 0);
+    }
+
+    public void addSubCommand(String name, ICommand command, String... permissions)
+    {
+        addSubCommand(name, command, 0, permissions);
+    }
+
+    public void addSubCommand(String name, ICommand command, int cooldown)
+    {
+        final SubCommand subCommand = new SubCommand(name, command);
+
+        subCommand.setCooldown(cooldown);
+        subCommands.put(name, subCommand);
+    }
+
+    public void addSubCommand(String name, ICommand command, int cooldown, String... permissions)
+    {
+        final SubCommand subCommand = new SubCommand(name, command);
+
+        subCommand.setCooldown(cooldown);
+        subCommand.addPermissions(permissions);
+        subCommands.put(name, subCommand);
     }
 
     public boolean hasCooldown() {
@@ -102,7 +124,6 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
             return true;
         }
 
-        // Si p == null ou le joueur a la permission ou le joueur est op alors on retourne true
         boolean hasPerm = canExecute(sender);
 
         if (!hasPerm)
