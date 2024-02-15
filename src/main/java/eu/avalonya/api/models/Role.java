@@ -1,35 +1,58 @@
 package eu.avalonya.api.models;
 
-import org.bukkit.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Role {
 
-    private String role;
-    private Citizen citizen;
+    private final String name;
+    private final String color;
 
+    private Map<String, Boolean> permissions = new HashMap<>();
 
-    public Role(Citizen citizen){
-
-        this.citizen = citizen;
-        this.role = null;
-
+    public Role(String name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
-    public boolean setRole(String role) {
-
-        if (citizen.getTown().getRoles().containsKey(role)){
-            this.role = role;
-            return true;
-        }
-        return false;
+    public Role(String name, Color color) {
+        this(name, color.getColor());
     }
 
-    public String getColor(){
-        String color = citizen.getTown().getRoles().get(role);
+    public String getColor() {
         return color;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
+
+    public void setPermission(String name, boolean value){
+        permissions.put(name, value);
+    }
+
+    public boolean getPermission(String name){
+        return permissions.getOrDefault(name, false);
+    }
+
+    public enum Color {
+        CITIZEN("§9"),
+        CUSTOM_ONE("§b"),
+        CUSTOM_TWO("§e"),
+        CUSTOM_THREE("§c"),
+        MAYOR("§6");
+
+        private final String color;
+
+        Color(String color)
+        {
+            this.color = color;
+        }
+
+        public String getColor()
+        {
+            return this.color;
+        }
+    }
+
 }
