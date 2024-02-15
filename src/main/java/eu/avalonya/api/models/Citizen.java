@@ -2,6 +2,7 @@ package eu.avalonya.api.models;
 
 import eu.avalonya.api.items.ItemAccess;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -30,8 +31,6 @@ public class Citizen implements ItemAccess {
             itemMeta.displayName(Component.text("§f" + player.getName()));
             playerHead.setItemMeta(itemMeta);
         }
-
-        this.role = new Role(this);
     }
 
     public boolean isMayor() {
@@ -69,12 +68,16 @@ public class Citizen implements ItemAccess {
         return player.getPlayer();
     }
 
+    public void setRole(Role role){
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
     @Override
     public ItemStack toItemStack() {
         return playerHead;
-    }
-
-    public Role getRole(){
-        return role;
     }
 }

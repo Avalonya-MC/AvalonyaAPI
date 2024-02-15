@@ -1,15 +1,16 @@
 package eu.avalonya.api.models;
 
+import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.items.ItemAccess;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -35,7 +36,7 @@ public class Town implements ItemAccess {
     private final List<Town> enemies = new ArrayList<>();
     private final List<Town> allies = new ArrayList<>();
     private List<Pattern> bannerPatterns = new ArrayList<>();
-    private Map<String, String> roles = new HashMap<>();
+    private List<Role> roles = new ArrayList<>();
 
     public Town(String name, Citizen mayor) {
         this.name = name;
@@ -47,9 +48,9 @@ public class Town implements ItemAccess {
         );
 
         spawn = createSpawn();
-
-        roles.put("Maire", "§6");
-        roles.put("Citoyen", "§9");
+        roles.add(
+                new Role("citizen", Role.Color.CITIZEN)
+        );
     }
 
     public String getName() {
@@ -122,14 +123,13 @@ public class Town implements ItemAccess {
         return claims;
     }
 
-    public void addCitizen(Citizen citizen) {
+    public void addCitizen(@NotNull Citizen citizen) {
+        citizen.setRole(roles.get(0));
         citizens.add(citizen);
-        citizen.getRole().setRole("Citoyen");
     }
 
     public void removeCitizen(Citizen citizen) {
         citizens.remove(citizen);
-        citizen.getRole().setRole(null);
     }
 
     public List<Citizen> getCitizens() {
@@ -253,33 +253,49 @@ public class Town implements ItemAccess {
         return bannerPatterns;
     }
 
-    public Map<String, String> getRoles() {
-        return roles;
+    public void addRole(String name) {
+        if (this.roles.size() == 4)
+        {
+            AvalonyaAPI.getInstance().getLogger().info("On ne peut pas crée plus de role");
+            return;
+        }
+
+        addRole(new Role(name, Role.Color.values()[this.roles.size()]));
     }
 
-    public boolean addRole(String name, String color){
-        if (roles.size() == 5){
-            return false;
+    public void addRole(Role role) {
+        if (this.roles.size() == 4)
+        {
+            AvalonyaAPI.getInstance().getLogger().info("On ne peut pas crée plus de role");
+            return;
         }
 
-        if (color != "&c" || color != "&e" || color != "&b"){
-            return false;
-        }
-        roles.put(name, color);
-        return true;
+        this.roles.add(role);
     }
 
-    public boolean removeRole(String role){
-        if (role == "Maire" || role == "Citoyen"){
-            return false;
+    public Role getRole(Role.Color color) {
+        for (Role role : this.roles) {
+            if (role.getColor().equalsIgnoreCase(color.getColor())) {
+                return role;
+            }
         }
-        if (roles.containsKey(role)){
-            roles.remove(role);
-            return true;
-        }
-        return false;
+
+        return null;
     }
 
+    public Role getRole(String name) {
+        for (Role role : this.roles) {
+            if (role.getName().equalsIgnoreCase(name)) {
+                return role;
+            }
+        }
+
+        return null;
+    }
+
+    public List<Role> getRoles() {
+        return this.roles;
+    }
 
     @Override
     public ItemStack toItemStack() {
