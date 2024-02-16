@@ -1,5 +1,7 @@
 package eu.avalonya.api;
 
+import eu.avalonya.api.command.BaseCommand;
+import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.models.Citizen;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
@@ -29,6 +31,7 @@ public class AvalonyaAPI extends JavaPlugin
 
         manageMigration();
 
+        BaseCommand.register(this, new DemoCommand());
     }
 
     public void manageMigration()
