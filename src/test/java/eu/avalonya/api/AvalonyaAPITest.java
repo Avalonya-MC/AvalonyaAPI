@@ -1,9 +1,9 @@
 package eu.avalonya.api;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ public class AvalonyaAPITest {
     @Test
     void testOnEnable()
     {
-        plugin.onEnable();
+        Assertions.assertTrue(plugin.isEnabled());
     }
 
 }

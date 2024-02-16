@@ -67,6 +67,12 @@
             <version>3.72.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+            <version>8.2.0</version>
+        </dependency>
     </dependencies>
 
     <properties>
