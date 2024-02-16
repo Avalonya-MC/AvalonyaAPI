@@ -61,6 +61,12 @@
             <artifactId>anvilgui</artifactId>
             <version>1.9.2-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.20</artifactId>
+            <version>3.72.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <properties>
