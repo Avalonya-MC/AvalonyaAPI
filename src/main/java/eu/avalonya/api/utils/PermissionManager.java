@@ -1,12 +1,12 @@
 package eu.avalonya.api.utils;
 
+import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.models.Rank;
 import eu.avalonya.api.sql.Cache;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
-import java.util.Map;
 
 public class PermissionManager
 {
@@ -28,18 +28,8 @@ public class PermissionManager
         }
         else
         {
-            System.out.println("La section 'ranks' n'existe pas dans le fichier de configuration.");
+            AvalonyaAPI.getInstance().getLogger().warning("La section 'ranks' n'existe pas dans le fichier de configuration.");
         }
-
-        for (Map.Entry<Rank, List<String>> entry : Cache.permissions.entrySet())
-        {
-            Rank rank = entry.getKey();
-            List<String> permissionList = entry.getValue();
-
-            System.out.println("Rang: " + rank);
-            System.out.println("Permissions: " + permissionList);
-        }
-
     }
 
 }
