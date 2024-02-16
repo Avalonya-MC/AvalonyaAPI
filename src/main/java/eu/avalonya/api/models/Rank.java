@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Rank enum that
+ * This class represents the different ranks available.
+ * Each rank has a name, prefixes for chat and tab, associated colors, a rank ID, etc.
  */
 public enum Rank
 {
@@ -29,6 +30,7 @@ public enum Rank
     private String orderTab;
     private int rankId;
 
+    // Static map to map rank IDs to corresponding ranks
     public static Map<Integer, Rank> rankIdToRank = new HashMap<>();
 
     Rank(String name, String prefixChat, String prefixTab, String colorChat, String colorName, String orderTab, int rankId)
@@ -42,6 +44,7 @@ public enum Rank
         this.rankId = rankId;
     }
 
+    // Static block to initialize the rankIdToRank map
     static
     {
         for(Rank rank: Rank.values())
@@ -50,7 +53,8 @@ public enum Rank
         }
     }
 
-    public static void printPrefixesToConsole(Player p)
+    // For debug purpose only
+    private static void printPrefixesToConsole(Player p)
     {
         for (Rank rank : Rank.values()) {
             p.sendMessage(MessageUtils.convertColor(rank.getPrefixChat() + rank.getColorName() + p.getName()));
