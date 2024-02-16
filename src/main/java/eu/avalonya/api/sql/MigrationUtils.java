@@ -140,7 +140,7 @@ public class MigrationUtils
        else if(currentVersion < MigrationMapping.values().length)
        {
            AvalonyaAPI.getInstance().getLogger().info("Database is not up to date, need to be updated.");
-           for(int i = currentVersion + 1; i < (MigrationMapping.values().length); i++)
+           for(int i = currentVersion + 1; i < (MigrationMapping.values().length - 1); i++)
            {
                Migration migration;
                try

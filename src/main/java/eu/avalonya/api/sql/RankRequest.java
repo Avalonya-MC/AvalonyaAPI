@@ -20,7 +20,6 @@ public class RankRequest
         // Double check, just in case
         if(!isPlayerExistsInDB(p))
         {
-
             AvalonyaAPI.getInstance().getLogger().info("SQL - createPlayer [" + p.getName() + "]");
             PreparedStatement r;
             try
@@ -45,7 +44,6 @@ public class RankRequest
 
     public static boolean isPlayerExistsInDB(Player p)
     {
-        AvalonyaAPI.getInstance().getLogger().info("Mais");
         try
         {
             Connection connection = AvalonyaAPI.getSqlInstance().getConnection();
@@ -53,7 +51,6 @@ public class RankRequest
             ResultSet res = statement.executeQuery();
             boolean hasAccount = res.next();
             statement.close();
-            AvalonyaAPI.getInstance().getLogger().info("Dans la BD");
             return hasAccount;
         }
         catch (SQLException e)
