@@ -77,7 +77,6 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
 
         if (strings.length == 1)
         {
-            commandSender.sendMessage("args 1");
             ArrayList<String> onlinePlayers = new ArrayList<>();
             for(Player p : AvalonyaAPI.getInstance().getServer().getOnlinePlayers())
             {
@@ -88,7 +87,6 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
 
         if (strings.length == 2)
         {
-            commandSender.sendMessage("args 2");
             completions.addAll(Rank.getRanksName());
         }
 
