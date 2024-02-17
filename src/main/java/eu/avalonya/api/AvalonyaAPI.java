@@ -1,11 +1,15 @@
 package eu.avalonya.api;
 
+import eu.avalonya.api.command.BaseCommand;
+import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
+import eu.avalonya.api.utils.PermissionManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AvalonyaAPI extends JavaPlugin
@@ -20,6 +24,7 @@ public class AvalonyaAPI extends JavaPlugin
         instance = this;
 
         CustomConfigFile sqlConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "database.yml", "sql");
+        CustomConfigFile permissionsConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "permissions.yml", "permissions");
 
         FileConfiguration fSql = ConfigFilesManager.getFile("sql").get();
 
@@ -27,6 +32,10 @@ public class AvalonyaAPI extends JavaPlugin
         AvalonyaAPI.sqlInstance.connection();
 
         manageMigration();
+
+        BaseCommand.register(this, new DemoCommand());
+
+        PermissionManager.loadPermissionsFromConfigFileToCache();
     }
 
     public void manageMigration()
