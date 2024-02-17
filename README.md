@@ -5,9 +5,9 @@ API de Avalonya
 
 ### Administration
 
-| Commande | Permission           | Description                                | 
-|----------|----------------------|--------------------------------------------|
-| setRank  | avalonya.api.setrank | Permet de définir un rank à un joueur      | 
+| Commande | Permission     | Description                                | 
+|----------|----------------|--------------------------------------------|
+| setRank  | avalonya.admin | Permet de définir un rank à un joueur      | 
 
 ### Modération
 

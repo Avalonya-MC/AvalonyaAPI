@@ -4,10 +4,9 @@ import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.command.BaseCommand;
 import eu.avalonya.api.models.Rank;
 import eu.avalonya.api.sql.RankRequest;
-import eu.avalonya.api.utils.TabManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -30,16 +29,16 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
     @Override
     public void run(CommandSender sender, SenderType senderType, String[] args)
     {
-        if (args.length != 2)
+        if (args.length == 0)
         {
             sender.sendMessage(getHelp());
             return;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
-        if (target == null)
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+        if (!target.hasPlayedBefore())
         {
-            sender.sendMessage("§cJoueur introuvable");
+            sender.sendMessage("§c➤ Joueur introuvable");
             return;
         }
 
@@ -49,24 +48,23 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
             int rankId = Rank.getIdFromName(rank);
             if (rankId == -1)
             {
-                sender.sendMessage("§cRang introuvable");
+                sender.sendMessage("§c➤ Rang introuvable");
                 return;
             }
             try
             {
                 RankRequest.setRankInDb(target, rankId);
-                sender.sendMessage("§2Mise à jour du rang du joueur §l" + target.getName() + "§r§2 à §l" + rank);
-                target.kick(Component.text("§2Votre rang vient d'être mit à jour à §l" + rank));
+                sender.sendMessage("§2➤ Mise à jour du rang du joueur §l" + target.getName() + "§r§2 à §l" + rank);
+                if (target.isOnline()) ((Player) target).kick(Component.text("§2Votre rang vient d'être mit à jour à §l" + rank));
             }
             catch (Exception e)
             {
-                sender.sendMessage("§cUne erreur est survenue : " + e.getMessage());
+                sender.sendMessage("§c➤ Une erreur est survenue : " + e.getMessage());
             }
-
         }
         else
         {
-            sender.sendMessage("§cRang introuvable");
+            sender.sendMessage("§c➤ Rang introuvable");
             sender.sendMessage(getHelp());
         }
 
@@ -79,6 +77,7 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
 
         if (strings.length == 1)
         {
+            commandSender.sendMessage("args 1");
             ArrayList<String> onlinePlayers = new ArrayList<>();
             for(Player p : AvalonyaAPI.getInstance().getServer().getOnlinePlayers())
             {
@@ -89,31 +88,22 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
 
         if (strings.length == 2)
         {
+            commandSender.sendMessage("args 2");
             completions.addAll(Rank.getRanksName());
         }
 
         return new ArrayList<>(completions);
     }
 
-    public void subRunHelp(CommandSender sender, SenderType senderType, String[] args)
-    {
-        sender.sendMessage("help");
-    }
-    public String getUsage()
-    {
-        StringBuilder usage = new StringBuilder("§c➤ Utilisation : /setrank <player> <rank>\n");
-        usage.append("§6Permet de modifier le grade d'un joueur.\n");
-        usage.append("Rangs disponibles : \n");
-        for(String rankName : Rank.getRanksName())
-        {
-            usage.append("    - " + rankName + "\n");
-        }
-        return usage.toString();
-    }
-
     public String getHelp()
     {
-        return Rank.getRanksName().toString();
+        StringBuilder usage = new StringBuilder("§c➤ Utilisation : /setrank <player> <rank>\n");
+        usage.append("Rangs disponibles : \n");
+        for(Rank r : Rank.values())
+        {
+            usage.append("    §6- " + r.getColorName() + r.getName() + "§r\n");
+        }
+        return usage.toString();
     }
 
 }

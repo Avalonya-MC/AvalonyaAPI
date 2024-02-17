@@ -10,11 +10,11 @@ commands:
     permission: avalonya.admin
 permissions:
   avalonya.admin:
-    description: toto
+    description: Permissions des commandes admin
     default: false
   avalonya.*:
     description: all perm
-    default: false
+    default: op
     children:
       avalonya.admin: true
 
