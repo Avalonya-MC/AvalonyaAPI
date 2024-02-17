@@ -73,16 +73,14 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings)
     {
-        Set<String> completions = new HashSet<>();
+        List<String> completions = new ArrayList<>();
 
         if (strings.length == 1)
         {
-            ArrayList<String> onlinePlayers = new ArrayList<>();
             for(Player p : AvalonyaAPI.getInstance().getServer().getOnlinePlayers())
             {
-                onlinePlayers.add(p.getName());
+                completions.add(p.getName());
             }
-            completions.addAll(onlinePlayers);
         }
 
         if (strings.length == 2)
