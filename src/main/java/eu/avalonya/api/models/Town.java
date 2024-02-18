@@ -256,19 +256,17 @@ public class Town implements ItemAccess {
 
     public void addRole(String name) throws TownRoleLimiteException{
 
-        if (this.roles.size() == 4) {
+        if (this.roles.size() >= 4) {
             throw new TownRoleLimiteException();
         }
-
         addRole(new Role(name, Role.Color.values()[this.roles.size()]));
     }
 
     public void addRole(Role role) throws TownRoleLimiteException {
 
-        if (this.roles.size() == 4) {
+        if (this.roles.size() >= 4) {
             throw new TownRoleLimiteException();
         }
-
         this.roles.add(role);
     }
 
@@ -278,7 +276,6 @@ public class Town implements ItemAccess {
                 return role;
             }
         }
-
         return null;
     }
 
@@ -288,7 +285,6 @@ public class Town implements ItemAccess {
                 return role;
             }
         }
-
         return null;
     }
 
