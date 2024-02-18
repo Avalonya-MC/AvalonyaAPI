@@ -256,7 +256,7 @@ public class Town implements ItemAccess {
     public void addRole(String name) {
         if (this.roles.size() == 4)
         {
-            AvalonyaAPI.getInstance().getLogger().info("On ne peut pas crée plus de role");
+            AvalonyaAPI.getInstance().getLogger().severe("On ne peut pas créer plus de rôle");
             return;
         }
 
@@ -266,7 +266,7 @@ public class Town implements ItemAccess {
     public void addRole(Role role) {
         if (this.roles.size() == 4)
         {
-            AvalonyaAPI.getInstance().getLogger().info("On ne peut pas crée plus de role");
+            AvalonyaAPI.getInstance().getLogger().severe("On ne peut pas créer plus de rôle");
             return;
         }
 
