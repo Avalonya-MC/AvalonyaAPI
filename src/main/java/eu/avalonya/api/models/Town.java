@@ -1,6 +1,7 @@
 package eu.avalonya.api.models;
 
 import eu.avalonya.api.AvalonyaAPI;
+import eu.avalonya.api.exceptions.TownRoleLimiteException;
 import eu.avalonya.api.items.ItemAccess;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
@@ -253,21 +254,19 @@ public class Town implements ItemAccess {
         return bannerPatterns;
     }
 
-    public void addRole(String name) {
-        if (this.roles.size() == 4)
-        {
-            AvalonyaAPI.getInstance().getLogger().severe("On ne peut pas créer plus de rôle");
-            return;
+    public void addRole(String name) throws TownRoleLimiteException{
+
+        if (this.roles.size() == 4) {
+            throw new TownRoleLimiteException();
         }
 
         addRole(new Role(name, Role.Color.values()[this.roles.size()]));
     }
 
-    public void addRole(Role role) {
-        if (this.roles.size() == 4)
-        {
-            AvalonyaAPI.getInstance().getLogger().severe("On ne peut pas créer plus de rôle");
-            return;
+    public void addRole(Role role) throws TownRoleLimiteException {
+
+        if (this.roles.size() == 4) {
+            throw new TownRoleLimiteException();
         }
 
         this.roles.add(role);
