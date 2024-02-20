@@ -1,6 +1,5 @@
 package eu.avalonya.api.models;
 
-import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.exceptions.TownRoleLimiteException;
 import eu.avalonya.api.items.ItemAccess;
 import net.kyori.adventure.text.Component;
