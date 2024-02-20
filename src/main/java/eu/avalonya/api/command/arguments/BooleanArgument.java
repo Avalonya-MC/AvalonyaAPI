@@ -8,12 +8,6 @@ public class BooleanArgument extends Argument<Boolean>
 {
 
     @Override
-    public List<String> getCompletions()
-    {
-        return List.of("true", "false");
-    }
-
-    @Override
     public boolean test(String input)
     {
         return input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false");
@@ -23,5 +17,11 @@ public class BooleanArgument extends Argument<Boolean>
     public Boolean get()
     {
         return Boolean.parseBoolean(getInput());
+    }
+
+    @Override
+    public List<String> getCompletions()
+    {
+        return List.of("true", "false");
     }
 }

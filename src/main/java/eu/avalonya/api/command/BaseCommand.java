@@ -186,28 +186,36 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings)
     {
-        if (strings.length == 1)
+        final List<String> completions = new ArrayList<>();
+
+        BaseCommand<?> subCommand = subCommands.get(strings[0]);
+        if (subCommand != null)
         {
-            List<String> completions = new ArrayList<>(subCommands.keySet());
-            completions.addAll(arguments.get(0).getCompletions());
-            return completions;
+            return subCommand.onTabComplete(commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
         }
         else
         {
-            BaseCommand<?> subCommand = subCommands.get(strings[0]);
-            if (subCommand != null)
+            if (strings.length == 1)
             {
-                return subCommand.onTabComplete(commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
+                appendIfStartsWith(completions, subCommands.keySet(), strings[0]);
             }
-            else
+            if (arguments.size() > strings.length - 1)
             {
-                if (arguments.size() > strings.length - 1)
-                {
-                    return arguments.get(strings.length - 1).getCompletions();
-                }
+                Argument<?> argument = arguments.get(strings.length - 1);
+                appendIfStartsWith(completions, argument.getCompletions(), strings[strings.length - 1]);
             }
         }
-        return List.of();
+        return completions;
+    }
+
+    private void appendIfStartsWith(List<String> from, Collection<String> collection, String start)
+    {
+        collection.forEach(completion -> {
+            if (completion.startsWith(start))
+            {
+                from.add(completion);
+            }
+        });
     }
 
     public static <T extends CommandSender> BaseCommand<T> newSubCommand(String name, RunnableCommand<T> run)

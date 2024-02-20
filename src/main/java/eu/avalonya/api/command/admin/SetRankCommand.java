@@ -3,6 +3,7 @@ package eu.avalonya.api.command.admin;
 import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.command.ArgumentCollection;
 import eu.avalonya.api.command.BaseCommand;
+import eu.avalonya.api.command.arguments.ChoiceArgument;
 import eu.avalonya.api.command.arguments.PlayerArgument;
 import eu.avalonya.api.command.arguments.StringArgument;
 import eu.avalonya.api.models.Rank;
@@ -29,7 +30,7 @@ public class SetRankCommand extends BaseCommand<CommandSender> implements TabCom
         super("setrank");
         this.addPermissions("avalonya.admin");
         this.addArgument(PlayerArgument.class);
-        this.addArgument(StringArgument.class);
+        this.addArgument(new ChoiceArgument(Rank.getRanksName()));
     }
     @Override
     public void run(CommandSender sender, ArgumentCollection args)

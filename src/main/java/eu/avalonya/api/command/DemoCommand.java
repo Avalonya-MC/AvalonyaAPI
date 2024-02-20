@@ -1,5 +1,6 @@
 package eu.avalonya.api.command;
 
+import eu.avalonya.api.command.arguments.BooleanArgument;
 import eu.avalonya.api.command.arguments.IntegerArgument;
 import eu.avalonya.api.command.arguments.PlayerArgument;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ public class DemoCommand extends BaseCommand<Player>
             sender.sendMessage("sub command");
         }));
         addArgument(PlayerArgument.class, true);
-        addArgument(IntegerArgument.class, true);
+        addArgument(BooleanArgument.class, true);
     }
 
     @Override
