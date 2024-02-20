@@ -1,35 +1,35 @@
 package eu.avalonya.api.command;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.*;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompleter {
+public abstract class BaseCommand<T extends CommandSender> implements CommandExecutor, TabCompleter, RunnableCommand<T>
+{
 
     /**
      * Messages
      */
-    private final Component ERROR_OCCURED = Component.text("Une erreur est survenue lors de l'éxécution de cette commande.").color(NamedTextColor.RED);
-    private final Component INSUFFICIENT_PERMISSION = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
     private final Component INVALID_SENDER_TYPE = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
+    private final Component INSUFFICIENT_PERMISSION = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
+    /*private final Component ERROR_OCCURED = Component.text("Une erreur est survenue lors de l'éxécution de cette commande.").color(NamedTextColor.RED);
+    private final Component INSUFFICIENT_PERMISSION = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
     private final Component COOLDOWN_MESSAGE = Component.text("Vous devez attendre %s secondes avant de pouvoir réutiliser cette commande.").color(NamedTextColor.RED);
+*/
 
-    /**
-     * Variables
-     */
     private final String name;
-    private final SenderType senderType;
+    private final ArgumentCollection arguments = new ArgumentCollection();
+    private final Map<String, BaseCommand<?>> subCommands = new HashMap<>();
+    private final List<UUID> onlyAccess = new ArrayList<>();
     private final List<String> permissions = new ArrayList<>();
-    private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private int cooldown = 0;
-    private final Map<CommandSender, Long> cooldowns = new HashMap<>();
+    protected int cooldown = 0;
+    private final Map<T, Long> cooldowns = new HashMap<>();
 
     /**
      * Constructors
@@ -37,12 +37,7 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
 
     public BaseCommand(@NotNull String name)
     {
-        this(name, SenderType.ALL);
-    }
-
-    public BaseCommand(@NotNull String name, @NotNull SenderType senderType) {
         this.name = name;
-        this.senderType = senderType;
     }
 
     public String getName()
@@ -50,166 +45,195 @@ public abstract class BaseCommand implements CommandExecutor, ICommand, TabCompl
         return name;
     }
 
-    public List<String> getPermissions()
+    public void addArgument(Argument<?> argument)
     {
-        return permissions;
+        arguments.add(argument);
     }
 
-    public void addPermission(String permission)
+    public <U extends Argument<?>> void addArgument(Class<U> argument)
     {
-        permissions.add(permission);
+        try
+        {
+            addArgument(argument.getDeclaredConstructor().newInstance());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    public void addPermissions(String... permissions)
+    public <U extends Argument<?>> void addArgument(Class<U> argument, boolean required)
+    {
+        try
+        {
+            Argument<?> arg = argument.getDeclaredConstructor().newInstance();
+            arg.setRequired(required);
+            addArgument(arg);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void addSubCommand(BaseCommand<?> command)
+    {
+        subCommands.put(command.getName(), command);
+    }
+
+    public void addOnlyAccess(UUID ...uuid)
+    {
+        onlyAccess.addAll(Arrays.asList(uuid));
+    }
+
+    public void addPermissions(String ...permissions)
     {
         this.permissions.addAll(Arrays.asList(permissions));
     }
 
-    private boolean canExecute(CommandSender sender)
+    public void setCooldown(int cooldown)
     {
-        return permissions.stream().anyMatch(sender::hasPermission) || permissions.isEmpty();
-    }
-
-    public void addSubCommand(String name, ICommand command)
-    {
-        addSubCommand(name, command, 0);
-    }
-
-    public void addSubCommand(String name, ICommand command, String... permissions)
-    {
-        addSubCommand(name, command, 0, permissions);
-    }
-
-    public void addSubCommand(String name, ICommand command, int cooldown)
-    {
-        final SubCommand subCommand = new SubCommand(name, command);
-
-        subCommand.setCooldown(cooldown);
-        subCommands.put(name, subCommand);
-    }
-
-    public void addSubCommand(String name, ICommand command, int cooldown, String... permissions)
-    {
-        final SubCommand subCommand = new SubCommand(name, command);
-
-        subCommand.setCooldown(cooldown);
-        subCommand.addPermissions(permissions);
-        subCommands.put(name, subCommand);
-    }
-
-    public boolean hasCooldown() {
-        return cooldown > 0;
-    }
-
-    /**
-     * Set the cooldown for the command
-     * @param cooldown The cooldown in seconds
-     */
-    public void setCooldown(int cooldown) {
         this.cooldown = cooldown;
     }
 
-    /**
-     * Call the abstract method {@link BaseCommand#run(CommandSender, SenderType, String[])}
-     */
+    private boolean canExecute(T sender)
+    {
+        if (onlyAccess.size() > 0 && sender instanceof Entity)
+        {
+            return onlyAccess.contains(((Entity) sender).getUniqueId());
+        }
+        if (permissions.size() > 0)
+        {
+            for (String permission : permissions)
+            {
+                if (!sender.hasPermission(permission))
+                {
+                    return false;
+                }
+            }
+        }
+        if (cooldown > 0)
+        {
+            if (cooldowns.containsKey(sender))
+            {
+                return cooldowns.get(sender) <= System.currentTimeMillis();
+            }
+        }
+        return true;
+    }
+
+    private void saveCooldown(T sender)
+    {
+        if (cooldown > 0)
+        {
+            cooldowns.put(sender, System.currentTimeMillis() + (cooldown * 1000L));
+        }
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String[] strings)
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args)
     {
-        final SenderType type = SenderType.fromInstance(sender);
-
-        if (this.senderType != SenderType.ALL && this.senderType != type)
-        {
-            sender.sendMessage(INVALID_SENDER_TYPE);
-            return true;
-        }
-
-        boolean hasPerm = canExecute(sender);
-
-        if (!hasPerm)
-        {
-            sender.sendMessage(INSUFFICIENT_PERMISSION);
-            return true;
-        }
-
         try
         {
-            if (strings.length > 0)
+            T sender = (T) commandSender;
+            if (!canExecute(sender))
             {
-                ICommand subCommand = subCommands.get(strings[0]);
+                sender.sendMessage(INSUFFICIENT_PERMISSION);
+                return true;
+            }
+
+            if (args.length > 0)
+            {
+                BaseCommand<?> subCommand = subCommands.get(args[0]);
                 if (subCommand != null)
                 {
-                    subCommand.run(sender, type, Arrays.copyOfRange(strings, 1, strings.length));
+                    subCommand.onCommand(sender, command, s, Arrays.copyOfRange(args, 1, args.length));
                     return true;
                 }
             }
-            if (hasCooldown())
-            {
-                if (this.cooldowns.containsKey(sender) && this.cooldowns.get(sender) >= System.currentTimeMillis())
-                {
-                    final TextReplacementConfig config = TextReplacementConfig.builder()
-                            .replacement(String.valueOf((this.cooldowns.get(sender) - System.currentTimeMillis()) / 1000))
-                            .match("%s")
-                            .build();
 
-                    sender.sendMessage(COOLDOWN_MESSAGE.replaceText(config));
+            for (int i = 0; i < this.arguments.size(); i++)
+            {
+                Argument<?> argument = this.arguments.get(i);
+                if (args.length <= i)
+                {
+                    if (argument.isRequired())
+                    {
+                        sender.sendMessage("Argument " + argument.getClass().getSimpleName() + " is required.");
+                        return true;
+                    }
+                }
+                if (!argument.test(args[i]))
+                {
+                    if (argument.getErrorMessage() != null)
+                        sender.sendMessage(argument.getErrorMessage());
                     return true;
                 }
-                this.cooldowns.put(sender, System.currentTimeMillis() + (this.cooldown * 1000L));
+                argument.setInput(args[i]);
             }
-            run(sender, type, strings);
+
+            saveCooldown(sender);
+            run(sender, arguments);
         }
-        catch(Exception e)
+        catch (ClassCastException e)
         {
-            sender.sendMessage(ERROR_OCCURED);
+            commandSender.sendMessage(INVALID_SENDER_TYPE);
+            return true;
         }
         return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        Set<String> completions = new HashSet<>();
-
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings)
+    {
         if (strings.length == 1)
         {
-            completions.addAll(subCommands.keySet());
+            List<String> completions = new ArrayList<>(subCommands.keySet());
+            completions.addAll(arguments.get(0).getCompletions());
+            return completions;
         }
-
-        return new ArrayList<>(completions);
+        else
+        {
+            BaseCommand<?> subCommand = subCommands.get(strings[0]);
+            if (subCommand != null)
+            {
+                return subCommand.onTabComplete(commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
+            }
+            else
+            {
+                if (arguments.size() > strings.length - 1)
+                {
+                    return arguments.get(strings.length - 1).getCompletions();
+                }
+            }
+        }
+        return List.of();
     }
 
-    public static void register(@NotNull JavaPlugin plugin, @NotNull BaseCommand command) {
+    public static <T extends CommandSender> BaseCommand<T> newSubCommand(String name, RunnableCommand<T> run)
+    {
+        return new BaseCommand<>(name)
+        {
+            @Override
+            public void run(T sender, ArgumentCollection args)
+            {
+                run.run(sender, args);
+            }
+        };
+    }
+
+    public static void register(JavaPlugin plugin, BaseCommand<?> command)
+    {
         final PluginCommand pluginCommand = plugin.getCommand(command.getName());
 
-        if (pluginCommand == null) {
-            plugin.getLogger().severe("Impossible de trouver la commande " + command.getName());
-            return;
+        if (pluginCommand == null)
+        {
+            throw new IllegalArgumentException("Command " + command.getName() + " is not registered in plugin.yml");
         }
+
         pluginCommand.setExecutor(command);
         pluginCommand.setTabCompleter(command);
     }
-
-    public enum SenderType {
-
-        NONE,
-        PLAYER,
-        CONSOLE,
-        ALL;
-
-        public static SenderType fromInstance(CommandSender sender) {
-            if (sender instanceof Player)
-            {
-                return PLAYER;
-            }
-            else if (sender instanceof ConsoleCommandSender)
-            {
-                return CONSOLE;
-            }
-            return NONE;
-        }
-
-    }
-
 
 }
 

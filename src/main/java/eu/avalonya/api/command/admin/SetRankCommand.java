@@ -1,7 +1,10 @@
 package eu.avalonya.api.command.admin;
 
 import eu.avalonya.api.AvalonyaAPI;
+import eu.avalonya.api.command.ArgumentCollection;
 import eu.avalonya.api.command.BaseCommand;
+import eu.avalonya.api.command.arguments.PlayerArgument;
+import eu.avalonya.api.command.arguments.StringArgument;
 import eu.avalonya.api.models.Rank;
 import eu.avalonya.api.sql.RankRequest;
 import net.kyori.adventure.text.Component;
@@ -19,30 +22,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SetRankCommand extends BaseCommand implements TabCompleter {
+public class SetRankCommand extends BaseCommand<CommandSender> implements TabCompleter {
 
     public SetRankCommand()
     {
-        super("setrank", SenderType.ALL);
+        super("setrank");
         this.addPermissions("avalonya.admin");
+        this.addArgument(PlayerArgument.class);
+        this.addArgument(StringArgument.class);
     }
     @Override
-    public void run(CommandSender sender, SenderType senderType, String[] args)
+    public void run(CommandSender sender, ArgumentCollection args)
     {
-        if (args.length == 0)
+        if (args.size() == 0)
         {
             sender.sendMessage(getHelp());
             return;
         }
 
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+        Player target = args.get(0, Player.class);
         if (!target.hasPlayedBefore())
         {
             sender.sendMessage("§c➤ Joueur introuvable");
             return;
         }
 
-        String rank = args[1];
+        String rank = args.get(1, String.class);
         if (Rank.getRanksName().contains(rank))
         {
             int rankId = Rank.getIdFromName(rank);
@@ -55,7 +60,7 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
             {
                 RankRequest.setRankInDb(target, rankId);
                 sender.sendMessage("§2➤ Mise à jour du rang du joueur §l" + target.getName() + "§r§2 à §l" + rank);
-                if (target.isOnline()) ((Player) target).kick(Component.text("§2Votre rang vient d'être mit à jour à §l" + rank));
+                if (target.isOnline()) target.kick(Component.text("§2Votre rang vient d'être mit à jour à §l" + rank));
             }
             catch (Exception e)
             {
@@ -70,7 +75,7 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
 
     }
 
-    @Override
+    /*@Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings)
     {
         List<String> completions = new ArrayList<>();
@@ -89,7 +94,7 @@ public class SetRankCommand extends BaseCommand implements TabCompleter {
         }
 
         return new ArrayList<>(completions);
-    }
+    }*/
 
     public String getHelp()
     {
