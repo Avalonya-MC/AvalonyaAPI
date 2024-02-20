@@ -2,7 +2,6 @@ package eu.avalonya.api.models;
 
 import eu.avalonya.api.items.ItemAccess;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

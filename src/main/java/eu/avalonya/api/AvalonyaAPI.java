@@ -2,7 +2,6 @@ package eu.avalonya.api;
 
 import eu.avalonya.api.command.BaseCommand;
 import eu.avalonya.api.command.DemoCommand;
-import eu.avalonya.api.models.Citizen;
 import eu.avalonya.api.command.admin.SetRankCommand;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
@@ -11,7 +10,6 @@ import eu.avalonya.api.utils.CustomConfigFile;
 import eu.avalonya.api.utils.PermissionManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AvalonyaAPI extends JavaPlugin
