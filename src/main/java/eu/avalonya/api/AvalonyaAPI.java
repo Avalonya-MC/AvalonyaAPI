@@ -19,6 +19,7 @@ public class AvalonyaAPI extends JavaPlugin
 
     private static AvalonyaAPI instance;
     private static SQL sqlInstance;
+    private final MinecraftVersion minecraftVersion = new MinecraftVersion(getServer());
 
     private static AvalonyaDatabase avalonyaDatabase;
 
@@ -32,10 +33,13 @@ public class AvalonyaAPI extends JavaPlugin
 
         FileConfiguration fSql = ConfigFilesManager.getFile("sql").get();
 
-        AvalonyaAPI.sqlInstance = new SQL("jdbc:mysql://", fSql.getString("host"), fSql.getString("database"), fSql.getString("user"), fSql.getString("password"));
-        AvalonyaAPI.sqlInstance.connection();
+        if (!minecraftVersion.isUnitVersion())
+        {
+            AvalonyaAPI.sqlInstance = new SQL("jdbc:mysql://", fSql.getString("host"), fSql.getString("database"), fSql.getString("user"), fSql.getString("password"));
+            AvalonyaAPI.sqlInstance.connection();
 
-        manageMigration();
+            manageMigration();
+        }
 
         new DemoCommand().register(this);
 
@@ -67,7 +71,10 @@ public class AvalonyaAPI extends JavaPlugin
     @Override
     public void onDisable()
     {
-        AvalonyaAPI.sqlInstance.disconnect();
+        if (!minecraftVersion.isUnitVersion())
+        {
+            AvalonyaAPI.sqlInstance.disconnect();
+        }
     }
 
     public static AvalonyaAPI getInstance()

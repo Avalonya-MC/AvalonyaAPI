@@ -30,4 +30,10 @@ public class AvalonyaAPITest {
         Assertions.assertTrue(plugin.isEnabled());
     }
 
+    @Test
+    void testInstance()
+    {
+        Assertions.assertNotNull(AvalonyaAPI.getInstance());
+    }
+
 }
