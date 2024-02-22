@@ -272,18 +272,5 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         };
     }
 
-    public static void register(JavaPlugin plugin, BaseCommand<?> command)
-    {
-        final PluginCommand pluginCommand = plugin.getCommand(command.getName());
-
-        if (pluginCommand == null)
-        {
-            throw new IllegalArgumentException("Command " + command.getName() + " is not registered in plugin.yml");
-        }
-
-        pluginCommand.setExecutor(command);
-        pluginCommand.setTabCompleter(command);
-    }
-
 }
 
