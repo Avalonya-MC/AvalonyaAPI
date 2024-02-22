@@ -34,4 +34,9 @@ public class ChoiceArgument extends Argument<String>
         return choices;
     }
 
+    @Override
+    public String getUsage()
+    {
+        return String.join("|", choices);
+    }
 }

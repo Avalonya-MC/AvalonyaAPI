@@ -59,4 +59,10 @@ public class PlayerArgument extends Argument<Player>
 
         return completions;
     }
+
+    @Override
+    public String getUsage()
+    {
+        return "player";
+    }
 }

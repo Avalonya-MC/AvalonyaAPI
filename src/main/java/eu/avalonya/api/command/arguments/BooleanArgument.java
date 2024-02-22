@@ -24,4 +24,10 @@ public class BooleanArgument extends Argument<Boolean>
     {
         return List.of("true", "false");
     }
+
+    @Override
+    public String getUsage()
+    {
+        return "boolean";
+    }
 }

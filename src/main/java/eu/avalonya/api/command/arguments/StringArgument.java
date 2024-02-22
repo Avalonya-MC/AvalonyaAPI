@@ -15,4 +15,10 @@ public class StringArgument extends Argument<String>
     {
         return getInput();
     }
+
+    @Override
+    public String getUsage()
+    {
+        return "string";
+    }
 }

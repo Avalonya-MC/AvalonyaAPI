@@ -21,4 +21,10 @@ public class IntegerArgument extends NumbersArgument<Integer>
     {
         return Integer.parseInt(getInput());
     }
+
+    @Override
+    public String getUsage()
+    {
+        return "integer";
+    }
 }

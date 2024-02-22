@@ -122,13 +122,6 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
                 }
             }
         }
-        if (getCooldown() > 0)
-        {
-            if (cooldowns.containsKey(sender))
-            {
-                return cooldowns.get(sender) <= System.currentTimeMillis();
-            }
-        }
         return true;
     }
 
@@ -140,6 +133,22 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         }
     }
 
+    private boolean inCooldown(T sender)
+    {
+        return getCooldown() > 0 && cooldowns.containsKey(sender) && cooldowns.get(sender) > System.currentTimeMillis();
+    }
+
+    protected String getUsage()
+    {
+        StringBuilder usage = new StringBuilder();
+        usage.append("/").append(getName());
+        for (Argument<?> argument : arguments)
+        {
+            usage.append(" <").append(argument.getUsage()).append(">");
+        }
+        return usage.toString();
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args)
     {
@@ -149,6 +158,14 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
             if (!canExecute(sender))
             {
                 sender.sendMessage(INSUFFICIENT_PERMISSION);
+                return true;
+            }
+
+            if (inCooldown(sender))
+            {
+                sender.sendMessage(
+                        Component.text("Vous devez attendre " + (cooldowns.get(sender) - System.currentTimeMillis()) / 1000 + " secondes avant de pouvoir réutiliser cette commande.").color(NamedTextColor.RED)
+                );
                 return true;
             }
 
@@ -169,14 +186,17 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
                 {
                     if (argument.isRequired())
                     {
-                        sender.sendMessage("Argument " + argument.getClass().getSimpleName() + " is required.");
+                        sender.sendMessage(
+                                Component.text(getUsage()).color(NamedTextColor.RED)
+                        );
                         return true;
                     }
                 }
                 if (!argument.test(args[i]))
                 {
-                    if (argument.getErrorMessage() != null)
-                        sender.sendMessage(argument.getErrorMessage());
+                    sender.sendMessage(
+                            Component.text(args[i] + " n'est pas un argument valide.").color(NamedTextColor.RED)
+                    );
                     return true;
                 }
                 argument.setInput(args[i]);

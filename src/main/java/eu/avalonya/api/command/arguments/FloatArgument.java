@@ -21,4 +21,10 @@ public class FloatArgument extends NumbersArgument<Float>
     {
         return Float.parseFloat(getInput());
     }
+
+    @Override
+    public String getUsage()
+    {
+        return "float";
+    }
 }
