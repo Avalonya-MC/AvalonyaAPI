@@ -208,7 +208,6 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         catch (ClassCastException e)
         {
             commandSender.sendMessage(INVALID_SENDER_TYPE);
-            return true;
         }
         return true;
     }
