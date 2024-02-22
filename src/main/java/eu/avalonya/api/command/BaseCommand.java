@@ -238,6 +238,18 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         return completions;
     }
 
+    public void register(JavaPlugin plugin)
+    {
+        final PluginCommand pluginCommand = plugin.getCommand(this.getName());
+
+        if (pluginCommand == null) {
+            plugin.getLogger().severe("Impossible de trouver la commande " + this.getName());
+            return;
+        }
+        pluginCommand.setExecutor(this);
+        pluginCommand.setTabCompleter(this);
+    }
+
     private void appendIfStartsWith(List<String> from, Collection<String> collection, String start)
     {
         collection.forEach(completion -> {
