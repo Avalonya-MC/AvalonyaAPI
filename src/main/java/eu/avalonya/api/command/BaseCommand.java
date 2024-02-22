@@ -91,9 +91,19 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         this.permissions.addAll(Arrays.asList(permissions));
     }
 
+    public List<String> getPermissions()
+    {
+        return permissions;
+    }
+
     public void setCooldown(int cooldown)
     {
         this.cooldown = cooldown;
+    }
+
+    public int getCooldown()
+    {
+        return cooldown;
     }
 
     private boolean canExecute(T sender)
@@ -102,9 +112,9 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         {
             return onlyAccess.contains(((Entity) sender).getUniqueId());
         }
-        if (permissions.size() > 0)
+        if (getPermissions().size() > 0)
         {
-            for (String permission : permissions)
+            for (String permission : getPermissions())
             {
                 if (!sender.hasPermission(permission))
                 {
@@ -112,7 +122,7 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
                 }
             }
         }
-        if (cooldown > 0)
+        if (getCooldown() > 0)
         {
             if (cooldowns.containsKey(sender))
             {
@@ -124,7 +134,7 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
 
     private void saveCooldown(T sender)
     {
-        if (cooldown > 0)
+        if (getCooldown() > 0)
         {
             cooldowns.put(sender, System.currentTimeMillis() + (cooldown * 1000L));
         }
