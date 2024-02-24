@@ -7,6 +7,16 @@ public abstract class Argument<T>
     private boolean required = false;
     private String input;
 
+    public Argument()
+    {
+        this(false);
+    }
+
+    public Argument(boolean required)
+    {
+        this.required = required;
+    }
+
     public abstract boolean test(String input);
     public abstract T get();
 

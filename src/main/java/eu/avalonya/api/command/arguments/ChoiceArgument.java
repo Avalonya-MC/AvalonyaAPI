@@ -11,7 +11,12 @@ public class ChoiceArgument extends Argument<String>
 
     public ChoiceArgument(List<String> choices)
     {
-        super();
+        this(choices, false);
+    }
+
+    public ChoiceArgument(List<String> choices, boolean required)
+    {
+        super(required);
 
         this.choices = choices;
     }

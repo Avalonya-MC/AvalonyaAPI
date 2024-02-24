@@ -34,7 +34,7 @@ public class PlayerArgument extends Argument<Player>
         {
             return player.isOnline();
         }
-        return true;
+        return player.hasPlayedBefore();
     }
 
     @Override
