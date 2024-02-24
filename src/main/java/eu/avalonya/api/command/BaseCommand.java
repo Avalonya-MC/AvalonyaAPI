@@ -18,10 +18,6 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
      */
     private final Component INVALID_SENDER_TYPE = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
     private final Component INSUFFICIENT_PERMISSION = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
-    /*private final Component ERROR_OCCURED = Component.text("Une erreur est survenue lors de l'éxécution de cette commande.").color(NamedTextColor.RED);
-    private final Component INSUFFICIENT_PERMISSION = Component.text("Vous n'avez pas accès à cette commande.").color(NamedTextColor.RED);
-    private final Component COOLDOWN_MESSAGE = Component.text("Vous devez attendre %s secondes avant de pouvoir réutiliser cette commande.").color(NamedTextColor.RED);
-*/
 
     private final String name;
     private final ArgumentCollection arguments = new ArgumentCollection();
