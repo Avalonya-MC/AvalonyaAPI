@@ -1,5 +1,6 @@
 package eu.avalonya.api.command;
 
+import eu.avalonya.api.AvalonyaAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.*;
@@ -204,6 +205,7 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
         catch (ClassCastException e)
         {
             commandSender.sendMessage(INVALID_SENDER_TYPE);
+            AvalonyaAPI.getInstance().getLogger().severe(e.getMessage());
         }
         return true;
     }
