@@ -11,7 +11,6 @@ import java.util.UUID;
 
 public class AvalonyaPlayer
 {
-
     private Player player;
     private UUID uuid;
     private Rank rank;
