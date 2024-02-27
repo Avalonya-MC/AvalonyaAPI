@@ -23,4 +23,14 @@ public class PlayerDao
         return player;
     }
 
+    public static boolean playerExists(Player p) throws SQLException
+    {
+        return AvalonyaDatabase.getPlayerDao().idExists(p.getUniqueId().toString());
+    }
+
+    public static APlayer getPlayer(Player p) throws SQLException
+    {
+        return AvalonyaDatabase.getPlayerDao().queryForId(p.getUniqueId().toString());
+    }
+
 }
