@@ -13,13 +13,13 @@ public class AvalonyaDatabase
 {
 
     @Getter
-    private static Dao<APlayer, String> playerDao = null;
+    private static Dao<AvalonyaPlayer, String> playerDao = null;
 
     public AvalonyaDatabase(String path, String user, String password) throws SQLException
     {
         ConnectionSource connectionSource = new JdbcConnectionSource(path, user, password);
-        TableUtils.createTableIfNotExists(connectionSource, APlayer.class);
-        playerDao = DaoManager.createDao(connectionSource, APlayer.class);
+        TableUtils.createTableIfNotExists(connectionSource, AvalonyaPlayer.class);
+        playerDao = DaoManager.createDao(connectionSource, AvalonyaPlayer.class);
     }
 
 }
