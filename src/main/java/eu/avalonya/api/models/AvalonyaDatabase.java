@@ -18,7 +18,7 @@ public class AvalonyaDatabase
     public AvalonyaDatabase(String path, String user, String password) throws SQLException
     {
         ConnectionSource connectionSource = new JdbcConnectionSource(path, user, password);
-        TableUtils.createTableIfNotExists(connectionSource, AvalonyaPlayer.class);
+        //TableUtils.createTableIfNotExists(connectionSource, AvalonyaPlayer.class);
         playerDao = DaoManager.createDao(connectionSource, AvalonyaPlayer.class);
     }
 

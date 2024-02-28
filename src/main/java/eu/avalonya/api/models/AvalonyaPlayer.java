@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@DatabaseTable(tableName = "player_1")
+@DatabaseTable(tableName = "player")
 @Getter
 @Setter
 public class AvalonyaPlayer
