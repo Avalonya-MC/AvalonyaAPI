@@ -49,7 +49,7 @@ public class AvalonyaAPI extends JavaPlugin
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            this.getLogger().severe(e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
     }
