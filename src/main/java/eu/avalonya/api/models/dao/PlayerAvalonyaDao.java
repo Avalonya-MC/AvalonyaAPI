@@ -44,4 +44,12 @@ public class PlayerAvalonyaDao
         return player;
     }
 
+    public static void updateLastConnectionValues(Player p) throws SQLException
+    {
+        AvalonyaPlayer player = AvalonyaDatabase.getPlayerDao().queryForId(p.getUniqueId().toString());
+        player.setLastIp(p.getAddress().getAddress().getHostAddress());
+        player.setLastLogin(new Timestamp(System.currentTimeMillis()));
+        AvalonyaDatabase.getPlayerDao().update(player);
+    }
+
 }
