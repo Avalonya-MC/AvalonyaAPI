@@ -35,7 +35,7 @@ public class SetRankCommand extends BaseCommand<CommandSender> implements TabCom
         }
         try
         {
-            PlayerAvalonyaDao.setRankId(target, rankId);
+            PlayerAvalonyaDao.updateRank(target, rankId);
             sender.sendMessage("§2➤ Mise à jour du rang du joueur §l" + target.getName() + "§r§2 à §l" + rank);
             if (target.isOnline()) target.kick(Component.text("§2Votre rang vient d'être mit à jour à §l" + rank));
         }

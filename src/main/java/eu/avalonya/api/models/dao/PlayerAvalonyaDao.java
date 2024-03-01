@@ -11,12 +11,11 @@ import java.sql.Timestamp;
 public class PlayerAvalonyaDao
 {
 
-    public static AvalonyaPlayer addPlayer(Player p) throws SQLException
+    public static AvalonyaPlayer create(Player p) throws SQLException
     {
         AvalonyaPlayer player = new AvalonyaPlayer();
         player.setUuid(p.getUniqueId().toString());
         player.setPseudo(p.getName());
-        player.setRankId(0);
         player.setLastLogin(new Timestamp(System.currentTimeMillis()));
         player.setFirstLogin(new Timestamp(System.currentTimeMillis()));
         player.setLastIp(p.getAddress().getAddress().getHostAddress());
@@ -24,19 +23,19 @@ public class PlayerAvalonyaDao
         return player;
     }
 
-    public static void setRankId(Player p, int rank) throws SQLException
+    public static void updateRank(Player p, int rank) throws SQLException
     {
-        AvalonyaPlayer player = getPlayer(p);
+        AvalonyaPlayer player = getAvalonyaPlayer(p);
         player.setRankId(rank);
         AvalonyaDatabase.getPlayerDao().update(player);
     }
 
-    public static boolean playerExists(Player p) throws SQLException
+    public static boolean exists(Player p) throws SQLException
     {
         return AvalonyaDatabase.getPlayerDao().idExists(p.getUniqueId().toString());
     }
 
-    public static AvalonyaPlayer getPlayer(Player p) throws SQLException
+    public static AvalonyaPlayer getAvalonyaPlayer(Player p) throws SQLException
     {
         AvalonyaPlayer player = AvalonyaDatabase.getPlayerDao().queryForId(p.getUniqueId().toString());
         player.setPlayer(p);
