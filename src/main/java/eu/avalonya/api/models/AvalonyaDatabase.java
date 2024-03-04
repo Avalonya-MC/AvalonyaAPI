@@ -22,7 +22,7 @@ public class AvalonyaDatabase
         ConnectionSource connectionSource = new JdbcConnectionSource(path, user, password);
         //TableUtils.createTableIfNotExists(connectionSource, AvalonyaPlayer.class);
         playerDao = DaoManager.createDao(connectionSource, AvalonyaPlayer.class);
-        townDao = DaoManager.createDao(connectionSource, Town.class);
+        townDao = DaoManager.lookupDao(connectionSource, Town.class);
     }
 
 }
