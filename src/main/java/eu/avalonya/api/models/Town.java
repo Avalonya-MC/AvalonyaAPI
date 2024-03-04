@@ -1,7 +1,12 @@
 package eu.avalonya.api.models;
 
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.exceptions.TownRoleLimiteException;
 import eu.avalonya.api.items.ItemAccess;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -17,26 +22,68 @@ import java.util.*;
 /**
  * Town model class that represents a town in the Avalonya api.
  */
+@DatabaseTable(tableName = "towns")
 public class Town implements ItemAccess {
 
+    @DatabaseField(id = true, generatedId = true)
+    private int id;
+
+    @DatabaseField(canBeNull = false, unique = true)
+    @Getter
+    @Setter
     private String name;
+
+    @DatabaseField
+    @Getter
+    @Setter
     private String politicalStatus = "";
-    private Citizen mayor;
+
+    @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
+    @Getter
     private float money = 0.0f;
+
+    @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
+    @Getter
+    @Setter
     private float taxes = 0.0f;
-    private final List<Chunk> claims = new ArrayList<>();
-    private final List<Citizen> citizens = new ArrayList<>();
-    private Location spawn;
+
+    @DatabaseField(columnName = "taxes_enabled", defaultValue = "false", dataType = DataType.BOOLEAN)
+    @Setter
     private boolean taxesEnabled = false;
+
+    @DatabaseField(columnName = "spawn_hostile_mob", defaultValue = "false", dataType = DataType.BOOLEAN)
+    @Setter
     private boolean spawnHostileMob = false;
+
+    @DatabaseField(columnName = "fire_spread", defaultValue = "false", dataType = DataType.BOOLEAN)
+    @Setter
     private boolean fireSpread = false;
+
+    @DatabaseField(columnName = "explosions", defaultValue = "false", dataType = DataType.BOOLEAN)
+    @Setter
     private boolean explosions = false;
+
+    @DatabaseField(columnName = "public", defaultValue = "false", dataType = DataType.BOOLEAN)
     private boolean publicTown = false;
+
+    @DatabaseField(columnName = "friendly_fire", defaultValue = "false", dataType = DataType.BOOLEAN)
+    @Setter
     private boolean friendlyFire = false;
+
     private final List<Town> enemies = new ArrayList<>();
     private final List<Town> allies = new ArrayList<>();
     private List<Pattern> bannerPatterns = new ArrayList<>();
-    private List<Role> roles = new ArrayList<>();
+    private final List<Role> roles = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private Location spawn;
+
+    @Getter
+    @Setter
+    private Citizen mayor;
+    private final List<Chunk> claims = new ArrayList<>();
+    private final List<Citizen> citizens = new ArrayList<>();
 
     public Town(String name, Citizen mayor) {
         this.name = name;
@@ -53,42 +100,12 @@ public class Town implements ItemAccess {
         );
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name){this.name =  name;}
-
-    public void setPoliticalStatus(String politicalStatus) {
-        this.politicalStatus = politicalStatus;
-    }
-
-    public String getPoliticalStatus() {
-        return politicalStatus;
-    }
-
-    public void setMayor(Citizen mayor) {
-        this.mayor = mayor;
-    }
-
-    public Citizen getMayor() {
-        return mayor;
-    }
-
     public float deposit(float amount) {
         return money += amount;
     }
 
     public float withdraw(float amount) {
         return money -= amount;
-    }
-
-    public float getMoney() {
-        return money;
-    }
-
-    public void setTaxes(float taxes) {
-        this.taxes = taxes;
     }
 
     public float increaseTaxes(float amount) {
@@ -100,10 +117,6 @@ public class Town implements ItemAccess {
     public float decreaseTaxes(float amount) {
         this.taxes -= amount;
 
-        return taxes;
-    }
-
-    public float getTaxes() {
         return taxes;
     }
 
@@ -153,44 +166,20 @@ public class Town implements ItemAccess {
         return getCitizen(player) != null;
     }
 
-    public void setSpawn(Location spawn) {
-        this.spawn = spawn;
-    }
-
-    public Location getSpawn() {
-        return spawn;
-    }
-
     protected Location createSpawn() {
         return claims.get(0).getBlock(8, 0, 8).getLocation();
-    }
-
-    public void setTaxesEnabled(boolean taxesEnabled) {
-        this.taxesEnabled = taxesEnabled;
     }
 
     public boolean hasTaxesEnabled() {
         return taxesEnabled;
     }
 
-    public void setSpawnHostileMob(boolean spawnHostileMob) {
-        this.spawnHostileMob = spawnHostileMob;
-    }
-
     public boolean hasSpawnHostileMob() {
         return spawnHostileMob;
     }
 
-    public void setFireSpread(boolean fireSpread) {
-        this.fireSpread = fireSpread;
-    }
-
     public boolean hasFireSpread() {
         return fireSpread;
-    }
-
-    public void setExplosions(boolean explosions) {
-        this.explosions = explosions;
     }
 
     public boolean hasExplosions() {
@@ -203,10 +192,6 @@ public class Town implements ItemAccess {
 
     public boolean isPublic() {
         return publicTown;
-    }
-
-    public void setFriendlyFire(boolean friendlyFire) {
-        this.friendlyFire = friendlyFire;
     }
 
     public boolean hasFriendlyFire() {
