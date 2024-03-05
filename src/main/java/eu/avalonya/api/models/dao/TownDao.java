@@ -27,7 +27,31 @@ public class TownDao
 
     public static Town getTown(String name) throws SQLException
     {
-        return AvalonyaDatabase.getTownDao().queryBuilder().where().eq("name", name).queryForFirst();
+        Town town = AvalonyaDatabase.getTownDao().queryBuilder().where().eq("name", name).queryForFirst();
+
+        if (town == null)
+        {
+            return null;
+        }
+
+        town.setCitizens(CitizenDao.getCitizens(town));
+
+        return town;
+    }
+
+    public static void update(Town town) throws SQLException
+    {
+        AvalonyaDatabase.getTownDao().update(town);
+    }
+
+    public static void delete(Town town) throws SQLException
+    {
+        AvalonyaDatabase.getTownDao().delete(town);
+    }
+
+    public static void delete(String name) throws SQLException
+    {
+        AvalonyaDatabase.getTownDao().delete(AvalonyaDatabase.getTownDao().queryBuilder().where().eq("name", name).queryForFirst());
     }
 
 }

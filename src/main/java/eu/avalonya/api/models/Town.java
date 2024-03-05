@@ -5,18 +5,21 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.exceptions.TownRoleLimiteException;
 import eu.avalonya.api.items.ItemAccess;
+import eu.avalonya.api.models.dao.PlotDao;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -26,6 +29,7 @@ import java.util.*;
 public class Town implements ItemAccess {
 
     @DatabaseField(id = true, generatedId = true)
+    @Getter
     private int id;
 
     @DatabaseField(canBeNull = false, unique = true)
@@ -70,11 +74,6 @@ public class Town implements ItemAccess {
     @Setter
     private boolean friendlyFire = false;
 
-    private final List<Town> enemies = new ArrayList<>();
-    private final List<Town> allies = new ArrayList<>();
-    private List<Pattern> bannerPatterns = new ArrayList<>();
-    private final List<Role> roles = new ArrayList<>();
-
     @Getter
     @Setter
     private Location spawn;
@@ -82,19 +81,36 @@ public class Town implements ItemAccess {
     @Getter
     @Setter
     private Citizen mayor;
-    private final List<Chunk> claims = new ArrayList<>();
-    private final List<Citizen> citizens = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private List<Citizen> citizens = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private List<Plot> claims = new ArrayList<>();
+    private final List<Town> enemies = new ArrayList<>();
+    private final List<Town> allies = new ArrayList<>();
+    private List<Pattern> bannerPatterns = new ArrayList<>();
+    private final List<Role> roles = new ArrayList<>();
 
     public Town(String name, Citizen mayor) {
         this.name = name;
         this.mayor = mayor;
 
         citizens.add(mayor);
-        claims.add(
-                mayor.getPlayer().getLocation().getChunk()
-        );
+        try
+        {
+            claims.add(
+                    PlotDao.create(this, mayor.getPlayer().getLocation().getChunk())
+            );
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-        spawn = createSpawn();
+        spawn = createSpawn(mayor.getPlayer().getWorld());
         roles.add(
                 new Role("citizen", Role.Color.CITIZEN)
         );
@@ -120,20 +136,21 @@ public class Town implements ItemAccess {
         return taxes;
     }
 
-    public void addClaim(Chunk chunk) {
-        claims.add(chunk);
+    public void addClaim(Chunk chunk) throws SQLException
+    {
+        claims.add(
+                PlotDao.create(this, chunk)
+        );
     }
 
-    public void removeClaim(Chunk chunk) {
-        claims.remove(chunk);
+    public void removeClaim(Chunk chunk)
+    {
+        claims.removeIf(plot -> plot.getX() == chunk.getX() && plot.getZ() == chunk.getZ());
     }
 
-    public boolean hasClaim(Chunk chunk) {
-        return claims.contains(chunk);
-    }
-
-    public List<Chunk> getClaims() {
-        return claims;
+    public boolean hasClaim(Chunk chunk)
+    {
+        return claims.stream().anyMatch(plot -> plot.getX() == chunk.getX() && plot.getZ() == chunk.getZ());
     }
 
     public void addCitizen(@NotNull Citizen citizen) {
@@ -145,29 +162,21 @@ public class Town implements ItemAccess {
         citizens.remove(citizen);
     }
 
-    public List<Citizen> getCitizens() {
-        return citizens;
-    }
-
     public Citizen getCitizen(Player player) {
         return getCitizen(player.getUniqueId());
     }
 
     public Citizen getCitizen(UUID uuid) {
-        for (Citizen citizen : citizens) {
-            if (citizen.getPlayer().getUniqueId().equals(uuid)) {
-                return citizen;
-            }
-        }
-        return null;
+        return citizens.stream().filter(citizen -> citizen.getPlayer().getUniqueId().equals(uuid)).findFirst().orElse(null);
     }
 
     public boolean hasCitizen(Player player) {
         return getCitizen(player) != null;
     }
 
-    protected Location createSpawn() {
-        return claims.get(0).getBlock(8, 0, 8).getLocation();
+    protected Location createSpawn(World world)
+    {
+        return claims.get(0).getChunk(world).getBlock(8, 0, 8).getLocation();
     }
 
     public boolean hasTaxesEnabled() {
