@@ -1,5 +1,8 @@
 package eu.avalonya.api.utils;
 
+import eu.avalonya.api.AvalonyaAPI;
+import org.bukkit.configuration.file.FileConfiguration;
+
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,6 +12,19 @@ public class DiscordLogger
 {
 
     private final String webhook;
+
+    private final String JSON = """
+        {
+            "content": "",
+            "embeds": [
+                {
+                    "title": "%function%",
+                    "description": "%stack_trace%",
+                    "color": "%color%"
+                }],
+            "username": "%username%",
+            "avatar_url": "%avatar_url%"
+        }""";
 
     public DiscordLogger(String webhookUrl)
     {
@@ -43,7 +59,7 @@ public class DiscordLogger
         }
     }
 
-    private void sendSingleMessage(String message) throws Exception
+    public void sendSingleMessage(String message) throws Exception
     {
         URL url = new URL(this.webhook);
 
@@ -52,17 +68,24 @@ public class DiscordLogger
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
 
-        String jsonMessage = "{\"content\":\"" + format(message) + "\"}";
+        FileConfiguration conf = ConfigFilesManager.getFile("discord").get();
+
+        String jsonCustom = this.replaceValues("fonction",
+                message,
+                conf.getString("color"),
+                conf.getString("username"),
+                conf.getString("logo"));
 
         try (OutputStream os = connection.getOutputStream())
         {
-            byte[] input = jsonMessage.getBytes(StandardCharsets.UTF_8);
+            byte[] input = jsonCustom.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
         int responseCode = connection.getResponseCode();
         System.out.println("Response code: " + responseCode);
         System.out.println("Response message:" + connection.getResponseMessage());
+        if (responseCode != 200)
 
         connection.disconnect();
     }
@@ -74,6 +97,18 @@ public class DiscordLogger
         newMessage = newMessage.replace("\n", "\\n");
         newMessage = newMessage.replace("\t", "\\t");
         return newMessage;
+    }
+
+    public String replaceValues(String functionName, String stackTrace, String color, String username, String avatarUrl)
+    {
+        String newJson = this.JSON;
+        newJson = newJson.replace("%function%", functionName);
+        newJson = newJson.replace("%stack_trace%", stackTrace);
+        newJson = newJson.replace("%color%", color);
+        newJson = newJson.replace("%username%", username);
+        newJson = newJson.replace("%avatar_url%", avatarUrl);
+        System.out.println(newJson);
+        return newJson;
     }
 
 }
