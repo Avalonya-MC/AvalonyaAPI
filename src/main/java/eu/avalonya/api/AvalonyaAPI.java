@@ -8,6 +8,7 @@ import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
 import eu.avalonya.api.utils.DiscordLogger;
 import eu.avalonya.api.utils.PermissionManager;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
@@ -15,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
 
+@Getter
 public class AvalonyaAPI extends JavaPlugin
 {
 
@@ -30,11 +32,15 @@ public class AvalonyaAPI extends JavaPlugin
     {
         instance = this;
 
-        discordLogger = new DiscordLogger("https://discord.com/api/webhooks/");
-        discordLogger.sendMessage("Hello la zone");
-
         CustomConfigFile sqlConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "database.yml", "sql");
         CustomConfigFile permissionsConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "permissions.yml", "permissions");
+        CustomConfigFile discordLoggerConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "discord.yml", "discord");
+
+        try {
+            this.enableDiscordLogger();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         FileConfiguration fSql = ConfigFilesManager.getFile("sql").get();
 
@@ -90,11 +96,6 @@ public class AvalonyaAPI extends JavaPlugin
     public static SQL getSqlInstance()
     {
         return sqlInstance;
-    }
-
-    public static DiscordLogger getDiscordLogger()
-    {
-        return discordLogger;
     }
 
 }
