@@ -20,7 +20,6 @@ public class AvalonyaAPI extends JavaPlugin
     private static AvalonyaAPI instance;
     private static SQL sqlInstance;
     private final MinecraftVersion minecraftVersion = new MinecraftVersion(getServer());
-
     private static AvalonyaDatabase avalonyaDatabase;
 
     @Override
