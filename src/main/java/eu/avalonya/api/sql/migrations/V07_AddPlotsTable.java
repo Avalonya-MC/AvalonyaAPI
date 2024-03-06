@@ -23,6 +23,6 @@ public class V07_AddPlotsTable extends Migration
     @Override
     public void execute()
     {
-
+        this.execute(this.addPlotsTable);
     }
 }
