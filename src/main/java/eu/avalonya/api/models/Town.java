@@ -3,8 +3,8 @@ package eu.avalonya.api.models;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import eu.avalonya.api.exceptions.TownRoleLimiteException;
 import eu.avalonya.api.items.ItemAccess;
+import eu.avalonya.api.models.dao.CitizenDao;
 import eu.avalonya.api.models.dao.PlotDao;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,12 +12,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -28,7 +25,7 @@ import java.util.*;
 @DatabaseTable(tableName = "towns")
 public class Town implements ItemAccess {
 
-    @DatabaseField(id = true, generatedId = true)
+    @DatabaseField(generatedId = true)
     @Getter
     private int id;
 
@@ -37,7 +34,7 @@ public class Town implements ItemAccess {
     @Setter
     private String name;
 
-    @DatabaseField
+    @DatabaseField(columnName = "politics", defaultValue = "")
     @Getter
     @Setter
     private String politicalStatus = "";
@@ -74,46 +71,29 @@ public class Town implements ItemAccess {
     @Setter
     private boolean friendlyFire = false;
 
+    @DatabaseField(columnName = "spawn_location", dataType = DataType.STRING)
     @Getter
     @Setter
-    private Location spawn;
+    private String spawnLocation;
+
+    @DatabaseField(columnName= "created_at")
+    @Getter
+    private Date createdAt;
 
     @Getter
     @Setter
     private Citizen mayor;
 
-    @Getter
-    @Setter
-    private List<Citizen> citizens = new ArrayList<>();
+    public Town()
+    {
+        this.createdAt = new Date();
+        // Required by ORMLite
+    }
 
-    @Getter
-    @Setter
-    private List<Plot> claims = new ArrayList<>();
-    private final List<Town> enemies = new ArrayList<>();
-    private final List<Town> allies = new ArrayList<>();
-    private List<Pattern> bannerPatterns = new ArrayList<>();
-    private final List<Role> roles = new ArrayList<>();
-
-    public Town(String name, Citizen mayor) {
+    public Town(String name)
+    {
         this.name = name;
-        this.mayor = mayor;
-
-        citizens.add(mayor);
-        try
-        {
-            claims.add(
-                    PlotDao.create(this, mayor.getPlayer().getLocation().getChunk())
-            );
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        spawn = createSpawn(mayor.getPlayer().getWorld());
-        roles.add(
-                new Role("citizen", Role.Color.CITIZEN)
-        );
+        this.createdAt = new Date();
     }
 
     public float deposit(float amount) {
@@ -136,47 +116,84 @@ public class Town implements ItemAccess {
         return taxes;
     }
 
-    public void addClaim(Chunk chunk) throws SQLException
+    public List<Plot> getPlots()
     {
-        claims.add(
-                PlotDao.create(this, chunk)
-        );
+        try {
+            return PlotDao.getPlots(this);
+        } catch (SQLException e) {
+            e.printStackTrace(); // TODO: Utiliser le logger
+        }
+
+        return new ArrayList<>();
     }
 
-    public void removeClaim(Chunk chunk)
+    /**
+     * Ajoute un chunk à la ville ou change le propriétaire du chunk si il est déjà revendiqué.
+     * @param chunk
+     */
+    public void addPlot(Chunk chunk)
     {
-        claims.removeIf(plot -> plot.getX() == chunk.getX() && plot.getZ() == chunk.getZ());
+        try
+        {
+            if (PlotDao.isClaimed(chunk))
+            {
+                Plot plot = PlotDao.getPlot(chunk);
+
+                if (plot.getTownId() == this.id)
+                {
+                    return;
+                }
+
+                plot.setTownId(this.id);
+                PlotDao.update(plot);
+            }
+            else
+            {
+                PlotDao.create(this, chunk);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace(); // TODO: Utiliser le logger
+        }
     }
 
-    public boolean hasClaim(Chunk chunk)
+    /**
+     * Action que peut effectuer une ville sur un chunk.
+     * Ainsi une sertraine action peut être effectuée sur un chunk.
+     * @param player le joueur essayant de revendiquer le chunk
+     * @param chunk le chunk visé
+     */
+    public void claim(Player player, Chunk chunk)
     {
-        return claims.stream().anyMatch(plot -> plot.getX() == chunk.getX() && plot.getZ() == chunk.getZ());
+        try
+        {
+            if (PlotDao.isClaimed(chunk))
+            {
+                player.sendMessage(Component.text("§cCe chunk est déjà revendiqué."));
+                return;
+            }
+
+            addPlot(chunk);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace(); // TODO: Utiliser le logger
+        }
     }
 
-    public void addCitizen(@NotNull Citizen citizen) {
-        citizen.setRole(roles.get(0));
-        citizens.add(citizen);
-    }
-
-    public void removeCitizen(Citizen citizen) {
-        citizens.remove(citizen);
-    }
-
-    public Citizen getCitizen(Player player) {
-        return getCitizen(player.getUniqueId());
-    }
-
-    public Citizen getCitizen(UUID uuid) {
-        return citizens.stream().filter(citizen -> citizen.getPlayer().getUniqueId().equals(uuid)).findFirst().orElse(null);
-    }
-
-    public boolean hasCitizen(Player player) {
-        return getCitizen(player) != null;
-    }
-
-    protected Location createSpawn(World world)
+    public List<Citizen> getCitizens()
     {
-        return claims.get(0).getChunk(world).getBlock(8, 0, 8).getLocation();
+        try
+        {
+            return CitizenDao.getCitizens(this);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace(); // TODO: Utiliser le logger
+        }
+
+        return new ArrayList<>();
     }
 
     public boolean hasTaxesEnabled() {
@@ -207,90 +224,12 @@ public class Town implements ItemAccess {
         return friendlyFire;
     }
 
-    public void addEnemy(Town town) {
-        enemies.add(town);
-    }
-
-    public boolean hasEnemy(Town town) {
-        return enemies.contains(town);
-    }
-
-    public void removeEnemy(Town town) {
-        enemies.remove(town);
-    }
-
-    public List<Town> getEnemies() {
-        return enemies;
-    }
-
-    public void addAlly(Town town) {
-        allies.add(town);
-    }
-
-    public void removeAlly(Town town) {
-        allies.remove(town);
-    }
-
-    public boolean hasAlly(Town town) {
-        return allies.contains(town);
-    }
-
-    public List<Town> getAllies() {
-        return allies;
-    }
-
-    public void setBannerMeta(List<Pattern> bannerPatterns) {
-        this.bannerPatterns = bannerPatterns;
-    }
-
-    public List<Pattern> getBannerMeta() {
-        return bannerPatterns;
-    }
-
-    public void addRole(String name) throws TownRoleLimiteException{
-
-        if (this.roles.size() >= 4) {
-            throw new TownRoleLimiteException();
-        }
-        addRole(new Role(name, Role.Color.values()[this.roles.size()]));
-    }
-
-    public void addRole(Role role) throws TownRoleLimiteException {
-
-        if (this.roles.size() >= 4) {
-            throw new TownRoleLimiteException();
-        }
-        this.roles.add(role);
-    }
-
-    public Role getRole(Role.Color color) {
-        for (Role role : this.roles) {
-            if (role.getColor().equalsIgnoreCase(color.getColor())) {
-                return role;
-            }
-        }
-        return null;
-    }
-
-    public Role getRole(String name) {
-        for (Role role : this.roles) {
-            if (role.getName().equalsIgnoreCase(name)) {
-                return role;
-            }
-        }
-        return null;
-    }
-
-    public List<Role> getRoles() {
-        return this.roles;
-    }
-
     @Override
     public ItemStack toItemStack() {
         ItemStack item = new ItemStack(Material.WHITE_BANNER);
         final BannerMeta meta = (BannerMeta) item.getItemMeta();
 
-        meta.setPatterns(bannerPatterns);
+        //meta.setPatterns(bannerPatterns);
         meta.displayName(Component.text("§f§l" + name + " §7Flag"));
         item.setItemMeta(meta);
 

@@ -12,16 +12,17 @@ public class TownDao
 
     public static Town create(String name, Player player) throws SQLException
     {
+        Town town = new Town(name);
         Citizen mayor = CitizenDao.getCitizen(player);
+
+        town.setSpawnLocation(player.getLocation().toString());
+        AvalonyaDatabase.getTownDao().create(town);
 
         if(mayor == null)
         {
-            mayor = CitizenDao.create(player);
+            CitizenDao.create(player, town);
         }
 
-        Town town = new Town(name, mayor);
-
-        AvalonyaDatabase.getTownDao().create(town);
         return town;
     }
 
@@ -33,8 +34,6 @@ public class TownDao
         {
             return null;
         }
-
-        town.setCitizens(CitizenDao.getCitizens(town));
 
         return town;
     }

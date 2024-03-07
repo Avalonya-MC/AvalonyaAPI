@@ -6,6 +6,9 @@ commands:
   demo:
     description: Demo command
     permission: avalonya.admin
+  town:
+    description: Town command
+    permission: avalonya.admin
 permissions:
   avalonya.admin:
     description: Permissions des commandes admin

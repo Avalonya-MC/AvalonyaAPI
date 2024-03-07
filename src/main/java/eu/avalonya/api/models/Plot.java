@@ -21,7 +21,7 @@ import org.bukkit.World;
 public class Plot
 {
 
-    @DatabaseField(id = true, generatedId = true)
+    @DatabaseField(generatedId = true)
     private int id;
 
     @DatabaseField(columnName = "town_id", canBeNull = false)
@@ -47,18 +47,7 @@ public class Plot
 
     public Plot()
     {
-    }
-
-    public Plot(Town town, Chunk chunk)
-    {
-        this(town, chunk.getX(), chunk.getZ());
-    }
-
-    public Plot(Town town, int x, int z)
-    {
-        this.townId = town.getId();
-        this.x = x;
-        this.z = z;
+        // Required by ORMLite
     }
 
     public Chunk getChunk(World world)

@@ -13,7 +13,7 @@ public class PlotDao
 
     public static Plot create(Town town, Chunk chunk) throws SQLException
     {
-        Plot plot = new Plot(town, chunk);
+        Plot plot = new Plot();
 
         AvalonyaDatabase.getPlotDao().create(plot);
 
@@ -28,6 +28,26 @@ public class PlotDao
     public static List<Plot> getPlots(Town town) throws SQLException
     {
         return AvalonyaDatabase.getPlotDao().queryForEq("town_id", town.getId());
+    }
+
+    public static boolean isClaimed(Chunk chunk) throws SQLException
+    {
+        return getPlot(chunk) != null;
+    }
+
+    public static void delete(Plot plot) throws SQLException
+    {
+        AvalonyaDatabase.getPlotDao().delete(plot);
+    }
+
+    public static void delete(Chunk chunk) throws SQLException
+    {
+        AvalonyaDatabase.getPlotDao().delete(getPlot(chunk));
+    }
+
+    public static void update(Plot plot) throws SQLException
+    {
+        AvalonyaDatabase.getPlotDao().update(plot);
     }
 
 }

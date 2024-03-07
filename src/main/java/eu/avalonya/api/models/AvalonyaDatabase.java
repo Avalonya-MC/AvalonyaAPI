@@ -25,9 +25,9 @@ public class AvalonyaDatabase
         ConnectionSource connectionSource = new JdbcConnectionSource(path, user, password);
         //TableUtils.createTableIfNotExists(connectionSource, AvalonyaPlayer.class);
         playerDao = DaoManager.createDao(connectionSource, AvalonyaPlayer.class);
-        townDao = DaoManager.lookupDao(connectionSource, Town.class);
-        citizenDao = DaoManager.lookupDao(connectionSource, Citizen.class);
-        plotDao = DaoManager.lookupDao(connectionSource, Plot.class);
+        townDao = DaoManager.createDao(connectionSource, Town.class);
+        citizenDao = DaoManager.createDao(connectionSource, Citizen.class);
+        plotDao = DaoManager.createDao(connectionSource, Plot.class);
     }
 
 }
