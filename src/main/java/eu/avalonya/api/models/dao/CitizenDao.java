@@ -34,4 +34,9 @@ public class CitizenDao
         return AvalonyaDatabase.getCitizenDao().queryForEq("town_id", town.getId());
     }
 
+    public static void update(Citizen citizen) throws SQLException
+    {
+        AvalonyaDatabase.getCitizenDao().update(citizen);
+    }
+
 }

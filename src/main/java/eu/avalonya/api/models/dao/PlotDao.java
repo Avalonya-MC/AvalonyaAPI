@@ -35,6 +35,12 @@ public class PlotDao
         return getPlot(chunk) != null;
     }
 
+    public static boolean hasTown(Chunk chunk, Town town) throws SQLException
+    {
+        Plot plot = getPlot(chunk);
+        return plot != null && plot.getTown().equals(town);
+    }
+
     public static void delete(Plot plot) throws SQLException
     {
         AvalonyaDatabase.getPlotDao().delete(plot);

@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -175,6 +174,28 @@ public class Town implements ItemAccess {
             }
 
             addPlot(chunk);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace(); // TODO: Utiliser le logger
+        }
+    }
+
+    /**
+     * Supprime un chunk de la ville.
+     * @param chunk le chunk à supprimer
+     */
+    public void unclaim(Player player, Chunk chunk)
+    {
+        try
+        {
+            if (!PlotDao.hasTown(chunk, this))
+            {
+                player.sendMessage(Component.text("§cCe chunk n'appartient pas à votre ville."));
+                return;
+            }
+
+            PlotDao.delete(chunk);
         }
         catch (SQLException e)
         {
