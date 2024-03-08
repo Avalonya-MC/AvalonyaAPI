@@ -102,7 +102,7 @@ public class AvalonyaAPI extends JavaPlugin
                 return true;
             }
 
-            sender.sendMessage("Name : " + town.getName());
+            sender.sendMessage("Name : " + town.getName() + " | ID : " + town.getId());
         }
         else if (args.length == 2)
         {
