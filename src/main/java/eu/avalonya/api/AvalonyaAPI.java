@@ -2,7 +2,11 @@ package eu.avalonya.api;
 
 import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.models.AvalonyaDatabase;
+import eu.avalonya.api.models.Citizen;
+import eu.avalonya.api.models.Plot;
 import eu.avalonya.api.models.Town;
+import eu.avalonya.api.models.dao.CitizenDao;
+import eu.avalonya.api.models.dao.PlotDao;
 import eu.avalonya.api.models.dao.TownDao;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
@@ -94,6 +98,36 @@ public class AvalonyaAPI extends JavaPlugin
     {
         if (args.length == 1)
         {
+            if (args[0].equalsIgnoreCase("claim"))
+            {
+                Citizen citizen = CitizenDao.getCitizen((Player) sender);
+
+                if (citizen == null)
+                {
+                    sender.sendMessage("You are not a citizen");
+                    return true;
+                }
+
+                Town town = citizen.getTown();
+
+                town.claim((Player) sender, ((Player) sender).getLocation().getChunk());
+                return true;
+            }
+            else if (args[0].equalsIgnoreCase("unclaim"))
+            {
+                Town town = CitizenDao.getCitizen((Player) sender).getTown();
+
+                town.unclaim((Player) sender, ((Player) sender).getLocation().getChunk());
+                return true;
+            }
+            else if (args[0].equalsIgnoreCase("view"))
+            {
+                Plot plot = PlotDao.getPlot(((Player) sender).getLocation().getChunk());
+
+                sender.sendMessage("Plot : " + plot.getId() + " | Town : " + plot.getTown().getName() + " | Type : " + plot.getType());
+                return true;
+            }
+
             Town town = TownDao.getTown(args[0]);
 
             if (town == null)

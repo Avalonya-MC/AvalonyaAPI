@@ -138,12 +138,12 @@ public class Town implements ItemAccess {
             {
                 Plot plot = PlotDao.getPlot(chunk);
 
-                if (plot.getTownId() == this.id)
+                if (plot.getTown().equals(this))
                 {
                     return;
                 }
 
-                plot.setTownId(this.id);
+                plot.setTown(this);
                 PlotDao.update(plot);
             }
             else

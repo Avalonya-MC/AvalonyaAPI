@@ -4,10 +4,12 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.models.dao.TownDao;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.checkerframework.checker.guieffect.qual.SafeEffect;
 
 import java.sql.SQLException;
 
@@ -20,15 +22,16 @@ import java.sql.SQLException;
  */
 @DatabaseTable(tableName = "plots")
 @Getter
-@Setter
+@NoArgsConstructor
 public class Plot
 {
 
     @DatabaseField(generatedId = true)
     private int id;
 
-    @DatabaseField(columnName = "town_id", canBeNull = false)
-    private int townId;
+    @DatabaseField(columnName = "town_id", canBeNull = false, foreign = true, foreignAutoRefresh = true)
+    @Setter
+    private Town town;
 
     @DatabaseField(canBeNull = false)
     private int x;
@@ -46,11 +49,14 @@ public class Plot
     private int permissions;
 
     @DatabaseField(defaultValue = "false", columnName = "is_outpost")
+    @Setter
     private boolean isOutpost;
 
-    public Plot()
+    public Plot(Chunk chunk, Town town)
     {
-        // Required by ORMLite
+        this.x = chunk.getX();
+        this.z = chunk.getZ();
+        this.town = town;
     }
 
     public Chunk getChunk(World world)
@@ -60,14 +66,7 @@ public class Plot
 
     public Town getTown()
     {
-        try
-        {
-            return TownDao.getTown(townId);
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return town;
     }
 
 }

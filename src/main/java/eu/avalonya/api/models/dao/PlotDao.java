@@ -13,7 +13,7 @@ public class PlotDao
 
     public static Plot create(Town town, Chunk chunk) throws SQLException
     {
-        Plot plot = new Plot();
+        Plot plot = new Plot(chunk, town);
 
         AvalonyaDatabase.getPlotDao().create(plot);
 
@@ -38,7 +38,7 @@ public class PlotDao
     public static boolean hasTown(Chunk chunk, Town town) throws SQLException
     {
         Plot plot = getPlot(chunk);
-        return plot != null && plot.getTown().equals(town);
+        return plot != null && plot.getTown().getId() == town.getId();
     }
 
     public static void delete(Plot plot) throws SQLException
