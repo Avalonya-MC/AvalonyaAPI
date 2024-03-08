@@ -21,15 +21,15 @@ public class CitizenDao
         citizen.setTown(town);
         AvalonyaDatabase.getCitizenDao().create(citizen);
 
-        return getCitizen(player);
+        return find(player);
     }
 
-    public static Citizen getCitizen(Player player) throws SQLException
+    public static Citizen find(Player player) throws SQLException
     {
         return AvalonyaDatabase.getCitizenDao().queryBuilder().where().eq("uuid", player.getUniqueId().toString()).queryForFirst();
     }
 
-    public static List<Citizen> getCitizens(Town town) throws SQLException
+    public static List<Citizen> getByTown(Town town) throws SQLException
     {
         return AvalonyaDatabase.getCitizenDao().queryForEq("town_id", town.getId());
     }

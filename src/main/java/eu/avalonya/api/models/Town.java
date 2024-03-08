@@ -207,7 +207,7 @@ public class Town implements ItemAccess {
     {
         try
         {
-            return CitizenDao.getCitizens(this);
+            return CitizenDao.getByTown(this);
         }
         catch (SQLException e)
         {

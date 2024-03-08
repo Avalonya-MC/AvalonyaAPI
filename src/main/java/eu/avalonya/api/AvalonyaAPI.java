@@ -100,7 +100,7 @@ public class AvalonyaAPI extends JavaPlugin
         {
             if (args[0].equalsIgnoreCase("claim"))
             {
-                Citizen citizen = CitizenDao.getCitizen((Player) sender);
+                Citizen citizen = CitizenDao.find((Player) sender);
 
                 if (citizen == null)
                 {
@@ -115,7 +115,7 @@ public class AvalonyaAPI extends JavaPlugin
             }
             else if (args[0].equalsIgnoreCase("unclaim"))
             {
-                Town town = CitizenDao.getCitizen((Player) sender).getTown();
+                Town town = CitizenDao.find((Player) sender).getTown();
 
                 town.unclaim((Player) sender, ((Player) sender).getLocation().getChunk());
                 return true;
