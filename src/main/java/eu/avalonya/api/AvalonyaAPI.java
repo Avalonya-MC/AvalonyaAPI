@@ -49,7 +49,6 @@ public class AvalonyaAPI extends JavaPlugin
         manageMigration();
 
         new DemoCommand().register(this);
-        getCommand("town").setExecutor(this);
 
         PermissionManager.loadPermissionsFromConfigFileToCache();
 
@@ -92,63 +91,4 @@ public class AvalonyaAPI extends JavaPlugin
         return sqlInstance;
     }
 
-    @SneakyThrows
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
-    {
-        if (args.length == 1)
-        {
-            if (args[0].equalsIgnoreCase("claim"))
-            {
-                Citizen citizen = CitizenDao.find((Player) sender);
-
-                if (citizen == null)
-                {
-                    sender.sendMessage("You are not a citizen");
-                    return true;
-                }
-
-                Town town = citizen.getTown();
-
-                town.claim((Player) sender, ((Player) sender).getLocation().getChunk());
-                return true;
-            }
-            else if (args[0].equalsIgnoreCase("unclaim"))
-            {
-                Town town = CitizenDao.find((Player) sender).getTown();
-
-                town.unclaim((Player) sender, ((Player) sender).getLocation().getChunk());
-                return true;
-            }
-            else if (args[0].equalsIgnoreCase("view"))
-            {
-                Plot plot = PlotDao.getPlot(((Player) sender).getLocation().getChunk());
-
-                sender.sendMessage("Plot : " + plot.getId() + " | Town : " + plot.getTown().getName() + " | Type : " + plot.getType());
-                return true;
-            }
-
-            Town town = TownDao.getTown(args[0]);
-
-            if (town == null)
-            {
-                sender.sendMessage("Town not found");
-                return true;
-            }
-
-            sender.sendMessage("Name : " + town.getName() + " | ID : " + town.getId());
-        }
-        else if (args.length == 2)
-        {
-            TownDao.create(args[0], (Player) sender);
-
-            sender.sendMessage("Town created");
-        }
-        else
-        {
-            sender.sendMessage("Usage : /town <name>");
-        }
-
-        return true;
-    }
 }
