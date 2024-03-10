@@ -103,7 +103,7 @@ public class DiscordLogger
     {
         String newJson = this.JSON;
         newJson = newJson.replace("%function%", functionName);
-        newJson = newJson.replace("%stack_trace%", stackTrace);
+        newJson = newJson.replace("%stack_trace%", format(stackTrace));
         newJson = newJson.replace("%color%", color);
         newJson = newJson.replace("%username%", username);
         newJson = newJson.replace("%avatar_url%", avatarUrl);
