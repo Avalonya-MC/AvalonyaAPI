@@ -2,29 +2,21 @@ package eu.avalonya.api;
 
 import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.models.AvalonyaDatabase;
-import eu.avalonya.api.models.Citizen;
-import eu.avalonya.api.models.Plot;
-import eu.avalonya.api.models.Town;
-import eu.avalonya.api.models.dao.CitizenDao;
-import eu.avalonya.api.models.dao.PlotDao;
-import eu.avalonya.api.models.dao.TownDao;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
+import eu.avalonya.api.utils.DiscordLogger;
 import eu.avalonya.api.utils.PermissionManager;
-import lombok.SneakyThrows;
+import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 
+@Getter
 public class AvalonyaAPI extends JavaPlugin
 {
 
@@ -33,6 +25,8 @@ public class AvalonyaAPI extends JavaPlugin
 
     private static AvalonyaDatabase avalonyaDatabase;
 
+    private static DiscordLogger discordLogger;
+
     @Override
     public void onEnable()
     {
@@ -40,6 +34,13 @@ public class AvalonyaAPI extends JavaPlugin
 
         CustomConfigFile sqlConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "database.yml", "sql");
         CustomConfigFile permissionsConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "permissions.yml", "permissions");
+        CustomConfigFile discordLoggerConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "discord.yml", "discord");
+
+        try {
+            this.enableDiscordLogger();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         FileConfiguration fSql = ConfigFilesManager.getFile("sql").get();
 
@@ -61,6 +62,12 @@ public class AvalonyaAPI extends JavaPlugin
             this.getLogger().severe(e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
+    }
+
+    public void enableDiscordLogger() throws Exception {
+        FileConfiguration discordConf = ConfigFilesManager.getFile("discord").get();
+        discordLogger = new DiscordLogger(discordConf.getString("webhook"));
+        discordLogger.sendSingleMessage("Démarrage du logger...");
     }
 
     public static AvalonyaDatabase getDb()
