@@ -6,6 +6,8 @@ commands:
   demo:
     description: Demo command
     permission: avalonya.admin
+  blabla:
+    description: test
 permissions:
   avalonya.admin:
     description: Permissions des commandes admin
