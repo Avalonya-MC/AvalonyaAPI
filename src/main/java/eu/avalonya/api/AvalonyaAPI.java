@@ -1,7 +1,6 @@
 package eu.avalonya.api;
 
 import eu.avalonya.api.command.DemoCommand;
-import eu.avalonya.api.command.Blabla;
 import eu.avalonya.api.models.AvalonyaDatabase;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
@@ -51,8 +50,6 @@ public class AvalonyaAPI extends JavaPlugin
             this.getLogger().severe(e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
-        new Blabla().register(this);
     }
 
     public static AvalonyaDatabase getDb()

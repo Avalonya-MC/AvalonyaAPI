@@ -19,15 +19,18 @@ public class TownDao
 
         town.setSpawnLocation(player.getLocation().toString());
 
-        AvalonyaDatabase.getTownDao().create(town);
-
         if(mayor == null)
         {
+            AvalonyaDatabase.getTownDao().create(town);
             CitizenDao.create(player, town);
         }
         else if (mayor.getTown() != null)
         {
             throw new CitizenAlreadyHasTownException();
+        }
+        else
+        {
+            AvalonyaDatabase.getTownDao().create(town);
         }
 
         return town;
