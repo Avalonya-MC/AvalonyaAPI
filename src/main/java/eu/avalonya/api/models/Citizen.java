@@ -38,8 +38,8 @@ public class Citizen implements ItemAccess {
     @DatabaseField(columnName = "town_id", foreign = true, foreignAutoRefresh = true)
     private Town town;
 
-    @DatabaseField(columnName = "role_id", foreign = true, foreignAutoRefresh = true)
-    private Role role;
+    @DatabaseField(columnName = "role")
+    private int role;
 
     public Citizen()
     {
@@ -86,12 +86,14 @@ public class Citizen implements ItemAccess {
         return player.getPlayer();
     }
 
-    public void setRole(Role role){
-        this.role = role;
+    public void setRole(Role roleId)
+    {
+        this.role = roleId.ordinal();
     }
 
-    public Role getRole() {
-        return role;
+    public Role getRole()
+    {
+        return Role.values()[role];
     }
 
     @Override
