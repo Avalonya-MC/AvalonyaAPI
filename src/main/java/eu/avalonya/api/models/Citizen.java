@@ -4,6 +4,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.items.ItemAccess;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -19,29 +20,29 @@ import java.util.Date;
  * Citizen model class that represents a citizen in the Avalonya api.
  */
 @DatabaseTable(tableName = "citizens")
+@Getter
 public class Citizen implements ItemAccess {
 
     @DatabaseField(canBeNull = false, columnName = "uuid", foreign = true, foreignAutoRefresh = true)
-    @Getter
     private AvalonyaPlayer player;
 
     @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
-    @Getter
     @Setter
     private float money;
 
     @DatabaseField(columnName= "joined_at")
-    @Getter
     @Setter
     private Date joinedAt;
 
     @DatabaseField(columnName = "town_id", foreign = true, foreignAutoRefresh = true)
     private Town town;
 
-    private ItemStack playerHead;
-
     @DatabaseField(columnName = "role")
+    @Getter(AccessLevel.NONE)
     private int role;
+
+    @Getter(AccessLevel.NONE)
+    private ItemStack playerHead;
 
     public Citizen()
     {
@@ -68,10 +69,6 @@ public class Citizen implements ItemAccess {
     public void setTown(Town town) {
         this.town = town;
         this.joinedAt = new Date();
-    }
-
-    public Town getTown() {
-        return town;
     }
 
     public boolean isPlayer(Player player) {
