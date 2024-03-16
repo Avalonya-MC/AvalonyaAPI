@@ -7,9 +7,9 @@ public class V08_UpdateCitizensRole extends Migration
 
     private String updateCitizensRole = """
             ALTER TABLE `citizens`
-            DROP FOREIGN KEY `role_id`,
+            DROP FOREIGN KEY `citizens_ibfk_2`,
             RENAME COLUMN `role_id` TO `role`,
-            ALTER COLUMN `role` INT DEFAULT 0,
+            MODIFY `role` INT DEFAULT(0);
             """;
 
     public void execute()
