@@ -203,7 +203,7 @@ public class Town implements ItemAccess {
     {
         try
         {
-            return CitizenDao.getByRole(this, 4).get(0);
+            return CitizenDao.getByRole(this, Role.MAYOR.ordinal()).get(0);
         }
         catch (SQLException e)
         {
