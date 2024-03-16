@@ -22,6 +22,7 @@ import java.util.Date;
 public class Citizen implements ItemAccess {
 
     @DatabaseField(canBeNull = false, columnName = "uuid", foreign = true, foreignAutoRefresh = true)
+    @Getter
     private AvalonyaPlayer player;
 
     @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
@@ -33,10 +34,11 @@ public class Citizen implements ItemAccess {
     @Getter
     @Setter
     private Date joinedAt;
-    private ItemStack playerHead;
 
     @DatabaseField(columnName = "town_id", foreign = true, foreignAutoRefresh = true)
     private Town town;
+
+    private ItemStack playerHead;
 
     @DatabaseField(columnName = "role")
     private int role;
@@ -82,10 +84,6 @@ public class Citizen implements ItemAccess {
         return p.equals(player);
     }
 
-    public Player getPlayer() {
-        return player.getPlayer();
-    }
-
     public void setRole(Role roleId)
     {
         this.role = roleId.ordinal();
@@ -99,5 +97,13 @@ public class Citizen implements ItemAccess {
     @Override
     public ItemStack toItemStack() {
         return playerHead;
+    }
+
+    public boolean equals(Citizen citizen) {
+        if (citizen == null) {
+            return false;
+        }
+
+        return citizen.getPlayer().getPseudo().equals(player.getPseudo()) && citizen.getJoinedAt().equals(joinedAt);
     }
 }

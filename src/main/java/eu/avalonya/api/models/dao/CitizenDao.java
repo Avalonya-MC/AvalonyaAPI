@@ -38,7 +38,7 @@ public class CitizenDao
 
     public static List<Citizen> getByRole(Town town, int role) throws SQLException
     {
-        return AvalonyaDatabase.getCitizenDao().queryBuilder().where().eq("town_id", town.getId()).and().eq("role_id", role).query();
+        return AvalonyaDatabase.getCitizenDao().queryBuilder().where().eq("town_id", town.getId()).and().eq("role", role).query();
     }
 
     public static List<Citizen> getByTown(Town town) throws SQLException
