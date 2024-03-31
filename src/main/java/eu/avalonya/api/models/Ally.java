@@ -14,6 +14,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class Ally {
 
+    @DatabaseField(generatedId = true)
+    private int id;
+
     @DatabaseField(columnName = "town_receiver", foreign = true, foreignAutoRefresh = true)
     private Town receiver;
 
