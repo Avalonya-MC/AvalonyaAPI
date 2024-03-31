@@ -30,17 +30,12 @@ public class AllyDao {
         return AvalonyaDatabase.getAllyDao().queryForId(id);
     }
 
-    public static Ally getAllies(Town town) throws SQLException
-    {
-        return AvalonyaDatabase.getAllyDao().queryForId(town.getId());
-    }
-
     public boolean inPienging(Ally ally) throws SQLException
     {
         return AvalonyaDatabase.getAllyDao().queryForSameId(ally).isPending();
     }
 
-    public List<Ally> getAllAllies() throws SQLException
+    public List<Ally> getAllies() throws SQLException
     {
         return AvalonyaDatabase.getAllyDao().queryForAll();
     }
