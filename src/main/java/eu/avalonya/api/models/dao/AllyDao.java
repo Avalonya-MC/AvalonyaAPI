@@ -25,7 +25,7 @@ public class AllyDao {
         AvalonyaDatabase.getAllyDao().update(ally);
     }
 
-    public static Ally getAllies(int id) throws SQLException
+    public static Ally getAlly(int id) throws SQLException
     {
         return AvalonyaDatabase.getAllyDao().queryForId(id);
     }
