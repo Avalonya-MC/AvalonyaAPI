@@ -15,6 +15,8 @@ public enum MigrationMapping
     V07_ADD_PLOTS_TABLE(7, V07_AddPlotsTable.class),
     V08_UPDATE_CITIZENS_ROLE(8, V08_UpdateCitizensRole.class),
     V09_UPDATE_CITIZENS_TABLE(9, V09_UpdateCitizensTable.class),
+    V10_ADD_ALLIES_TABLE(10, V10_AddAllies.class),
+    v11_ADD_MARIAGE_TABLE(11, V11_AddMariageTable.class)
     ;
 
     private final int id;
