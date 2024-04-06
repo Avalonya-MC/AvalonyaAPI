@@ -10,7 +10,7 @@ public class V11_AddMariageTable extends Migration
               `id` INT NOT NULL AUTO_INCREMENT,
               `sender` INT NOT NULL,
               `receiver` INT NOT NULL,
-              `create_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
               FOREIGN KEY (`sender`) REFERENCES `citizens`(`id`),
               FOREIGN KEY (`receiver`) REFERENCES `citizens`(`id`),
               PRIMARY KEY (`id`)
