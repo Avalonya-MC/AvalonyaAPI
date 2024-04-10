@@ -20,10 +20,21 @@ public class MariageDao
         return mariage;
     }
 
+    public static void saveToDb(Mariage mariage)
+    {
+        try
+        {
+            AvalonyaDatabase.getMariageDao().create(mariage);
+        }
+        catch (SQLException e)
+        {
+            AvalonyaAPI.getInstance().getLogger().severe("Unable to create mariage in DB : " + e.getMessage());
+        }
+    }
+
     public boolean isAlreadyMarried(Citizen player)
     {
         Mariage m = null;
-        // Coquin
         try
         {
             m = AvalonyaDatabase.getMariageDao().queryBuilder()
@@ -35,6 +46,23 @@ public class MariageDao
             AvalonyaAPI.getInstance().getLogger().severe("...");
         }
         return m == null;
+    }
+
+    public static Citizen get(Citizen player)
+    {
+        Mariage m = null;
+        try
+        {
+            m = AvalonyaDatabase.getMariageDao().queryBuilder()
+                    .where().eq("sender", player.getPlayer().getPlayer().getUniqueId().toString())
+                    .or().eq("receiver", player.getPlayer().getPlayer().getUniqueId().toString())
+                    .queryForFirst();
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+        if (m == null) return null;
+        return m.getReceiver() == player ? player : m.getSender();
     }
 
 }

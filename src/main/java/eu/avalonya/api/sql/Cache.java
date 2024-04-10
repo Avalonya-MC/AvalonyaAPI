@@ -38,7 +38,9 @@ public class Cache
         int id = -1;
         for (int i = 0; i < mariagesRequest.size(); i++)
         {
-            if (mariagesRequest.get(i).getSender().getPlayer().getPlayer() == sender && mariagesRequest.get(i).getReceiver().getPlayer().getPlayer() == receiver)
+            Mariage m = mariagesRequest.get(i);
+            if (m.getSender().getPlayer().getPlayer() == sender
+                    && m.getReceiver().getPlayer().getPlayer() == receiver)
             {
                 id = i;
             }
