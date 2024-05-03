@@ -32,7 +32,7 @@ public class MariageDao
         }
     }
 
-    public boolean isAlreadyMarried(Citizen player)
+    public static boolean isAlreadyMarried(Citizen player)
     {
         Mariage m = null;
         try
@@ -43,9 +43,9 @@ public class MariageDao
                     .queryForFirst();
         } catch (SQLException e)
         {
-            AvalonyaAPI.getInstance().getLogger().severe("...");
+            AvalonyaAPI.getInstance().getLogger().severe(e.getMessage());
         }
-        return m == null;
+        return m != null;
     }
 
     public static Citizen get(Citizen player)

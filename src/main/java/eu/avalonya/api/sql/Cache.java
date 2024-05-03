@@ -23,7 +23,7 @@ public class Cache
     public static ArrayList<Player> staffList = new ArrayList<>();
 
 
-    public static boolean contains(Player sender, Player receiver)
+    public static boolean contains(Player sender, Player receiver) // TODO : Changer le nom
     {
         for (Mariage m : mariagesRequest)
         {
