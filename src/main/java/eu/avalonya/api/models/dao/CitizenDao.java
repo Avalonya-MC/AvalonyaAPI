@@ -33,7 +33,9 @@ public class CitizenDao
 
     public static Citizen find(Player player) throws SQLException
     {
-        return AvalonyaDatabase.getCitizenDao().queryBuilder().where().eq("uuid", player.getUniqueId().toString()).queryForFirst();
+        Citizen citizen = AvalonyaDatabase.getCitizenDao().queryBuilder().where().eq("uuid", player.getUniqueId().toString()).queryForFirst();
+        citizen.getPlayer().setPlayer(player);
+        return citizen;
     }
 
     public static List<Citizen> getByRole(Town town, int role) throws SQLException
