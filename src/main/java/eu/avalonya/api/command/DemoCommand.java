@@ -1,11 +1,9 @@
 package eu.avalonya.api.command;
 
 import eu.avalonya.api.command.arguments.BooleanArgument;
-import eu.avalonya.api.command.arguments.IntegerArgument;
 import eu.avalonya.api.command.arguments.PlayerArgument;
 import eu.avalonya.api.command.arguments.RegexArgument;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.CommandBlock;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,7 +17,6 @@ public class DemoCommand extends BaseCommand<Player>
         // Add sub commands
         addSubCommand(BaseCommand.newSubCommand("sub", (sender, args) -> {
             sender.sendMessage("sub command");
-            CommandBlock player = (CommandBlock) sender;
         }));
         addSubCommand(sub2());
 
@@ -28,7 +25,6 @@ public class DemoCommand extends BaseCommand<Player>
         addArgument(BooleanArgument.class, true);
         addArgument(new RegexArgument("[a-zA-Z_]+", true));
     }
-
 
     @Override
     public void run(Player sender, ArgumentCollection args)
