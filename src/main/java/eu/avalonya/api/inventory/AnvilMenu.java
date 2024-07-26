@@ -33,12 +33,4 @@ public abstract class AnvilMenu {
 
     public abstract List<AnvilGUI.ResponseAction> onConfirm(Player player, String text);
 
-    public void open(Player player) {
-        builder.open(player);
-    }
-
-    public void open(HumanEntity humanEntity) {
-        open((Player) humanEntity);
-    }
-
 }
