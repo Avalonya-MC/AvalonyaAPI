@@ -27,6 +27,7 @@ public class AvalonyaAPI extends JavaPlugin
     {
         instance = this;
 
+        new CustomConfigFile(AvalonyaAPI.getInstance(), "backend.yml", "backend");
         CustomConfigFile sqlConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "database.yml", "sql");
         CustomConfigFile permissionsConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "permissions.yml", "permissions");
 
