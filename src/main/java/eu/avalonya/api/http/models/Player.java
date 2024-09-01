@@ -1,9 +1,9 @@
 package eu.avalonya.api.http.models;
 
-import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.http.Backend;
 import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.models.Rank;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public class Player extends AbstractModel<Player> {
 
     @Override
     public Endpoint getEndpoint() {
-        return Endpoint.PLAYERS;
+        return Endpoint.PLAYER;
     }
 
     public Rank getRank() {
@@ -32,7 +32,7 @@ public class Player extends AbstractModel<Player> {
         Backend.delete(endpoint);
     }
 
-    public void create() {
-        Backend.post(Endpoint.PLAYER, AvalonyaAPI.getGson().toJson(this));
+    public static List<Player> getAll() {
+        return Backend.get(Endpoint.PLAYERS, null).toList(Player.class);
     }
 }

@@ -1,6 +1,5 @@
 package eu.avalonya.api.http.models;
 
-import com.google.gson.Gson;
 import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.http.Backend;
 import eu.avalonya.api.http.Endpoint;
@@ -21,11 +20,11 @@ public abstract class AbstractModel<T extends AbstractModel<?>> {
             Endpoint endpoint = clazz.getConstructor().newInstance().getEndpoint();
             Response response = Backend.post(endpoint, body);
 
-            if (response.getStatus() != 200) {
+            if (response.status() != 200) {
                 return null;
             }
 
-            return AvalonyaAPI.getGson().fromJson(response.getBody(), clazz);
+            return AvalonyaAPI.getGson().fromJson(response.body(), clazz);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
             return null;
@@ -37,11 +36,11 @@ public abstract class AbstractModel<T extends AbstractModel<?>> {
             Endpoint endpoint = clazz.getConstructor().newInstance().getEndpoint();
             Response response = Backend.get(Endpoint.bind(endpoint, id), "");
 
-            if (response.getStatus() != 200) {
+            if (response.status() != 200) {
                 return null;
             }
 
-            return AvalonyaAPI.getGson().fromJson(response.getBody(), clazz);
+            return AvalonyaAPI.getGson().fromJson(response.body(), clazz);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
             return null;
