@@ -22,8 +22,8 @@ public class Backend {
         return request("PUT", endpoint, body);
     }
 
-    public static Response delete(Endpoint endpoint, String body) {
-        return request("DELETE", endpoint, body);
+    public static Response delete(Endpoint endpoint) {
+        return request("DELETE", endpoint, null);
     }
 
     @SneakyThrows
@@ -37,9 +37,11 @@ public class Backend {
             "Bearer " + ConfigFilesManager.getFile("backend").get().getString("token"));
         con.setDoOutput(true);
 
-        con.getOutputStream().write(body.getBytes());
-        con.getOutputStream().flush();
-        con.getOutputStream().close();
+        if (body != null) {
+            con.getOutputStream().write(body.getBytes());
+            con.getOutputStream().flush();
+            con.getOutputStream().close();
+        }
 
         int status = con.getResponseCode();
         String response = new String(con.getInputStream().readAllBytes());
