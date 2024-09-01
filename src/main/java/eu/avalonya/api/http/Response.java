@@ -1,21 +1,18 @@
 package eu.avalonya.api.http;
 
-public class Response {
+import com.google.gson.reflect.TypeToken;
+import eu.avalonya.api.AvalonyaAPI;
+import java.util.List;
 
-    private final int status;
-    private final String body;
+public record Response(int status, String body) {
 
-    public Response(int status, String body) {
-        this.status = status;
-        this.body = body;
+    public <T> T to(Class<T> clazz) {
+        return AvalonyaAPI.getGson().fromJson(this.body, clazz);
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public String getBody() {
-        return body;
+    public <T> List<T> toList(Class<T> clazz) {
+        return AvalonyaAPI.getGson().fromJson(this.body, new TypeToken<List<T>>() {
+        }.getType());
     }
 
 }
