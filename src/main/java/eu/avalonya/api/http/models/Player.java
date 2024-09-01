@@ -6,7 +6,6 @@ import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.models.Rank;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.ApiStatus;
 
 @Getter
 @Setter
