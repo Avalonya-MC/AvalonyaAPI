@@ -1,12 +1,16 @@
 package eu.avalonya.api;
 
+import com.google.gson.Gson;
 import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.models.AvalonyaDatabase;
+import eu.avalonya.api.models.Model;
+import eu.avalonya.api.models.Test;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
 import eu.avalonya.api.utils.PermissionManager;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
@@ -19,6 +23,7 @@ public class AvalonyaAPI extends JavaPlugin
 
     private static AvalonyaAPI instance;
     private static SQL sqlInstance;
+    private static Gson gson = new Gson();
 
     private static AvalonyaDatabase avalonyaDatabase;
 
@@ -79,6 +84,10 @@ public class AvalonyaAPI extends JavaPlugin
     public static SQL getSqlInstance()
     {
         return sqlInstance;
+    }
+
+    public static Gson getGson() {
+        return gson;
     }
 
 }
