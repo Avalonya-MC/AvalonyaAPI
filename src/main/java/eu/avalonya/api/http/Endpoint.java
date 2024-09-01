@@ -11,9 +11,20 @@ public enum Endpoint {
     PLAYERS("/players"),
     // GET, PUT, DELETE
     PLAYERS_ID("/players/{id}"),
-    // POST
+    // GET, POST
     PLAYER_WARNS("/player/{id}/warns"),
-
+    // GET, POST
+    BACKPACKS("/backpacks"),
+    // GET, PUT, DELETE
+    BACKPACKS_ID("/backpacks/{id}"),
+    // GET, POST
+    NATIONS("/nations"),
+    // GET, PUT, DELETE
+    NATIONS_NAME("/nations/{name}"),
+    // GET, POST
+    RANKS("/ranks"),
+    // GET, PUT, DELETE
+    RANKS_NAME("/ranks/{name}"),
     ;
 
     private static final String REGEX = "\\{[a-zA-Z0-9]+\\}";
