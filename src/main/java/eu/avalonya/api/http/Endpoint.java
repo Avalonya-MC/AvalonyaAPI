@@ -14,6 +14,10 @@ public enum Endpoint {
     // GET, POST
     PLAYER_WARNS("/player/{id}/warns"),
     // GET, POST
+    RANKS("/ranks"),
+    // GET, PUT, DELETE
+    RANKS_NAME("/ranks/{name}"),
+    // GET, POST
     BACKPACKS("/backpacks"),
     // GET, PUT, DELETE
     BACKPACKS_ID("/backpacks/{id}"),
@@ -22,12 +26,16 @@ public enum Endpoint {
     // GET, PUT, DELETE
     NATIONS_NAME("/nations/{name}"),
     // GET, POST
-    RANKS("/ranks"),
+    NATIONS_TOWNS(NATIONS_NAME.getPath() + "/towns"),
+    // GET, POST
+    TOWNS("/towns"),
     // GET, PUT, DELETE
-    RANKS_NAME("/ranks/{name}"),
+    TOWNS_NAME("/towns/{name}"),
+    // GET, POST
+    CITIZENS(TOWNS_NAME.getPath() + "/citizens"),
     ;
 
-    private static final String REGEX = "\\{[a-zA-Z0-9]+\\}";
+    private static final String REGEX = "\\{[a-zA-Z0-9]+}";
 
     @Getter
     @Setter
