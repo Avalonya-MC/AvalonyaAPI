@@ -15,6 +15,7 @@ import java.util.Map;
 @Setter
 public class Town extends AbstractModel {
 
+    private int id;
     private String name;
     private String spawnLocation;
 
@@ -44,6 +45,10 @@ public class Town extends AbstractModel {
         Endpoint endpoint = Endpoint.bind(Endpoint.TOWNS_NAME, name);
 
         return Backend.get(endpoint, null).to(Town.class);
+    }
+
+    public static List<Town> getAll() {
+        return Backend.get(Endpoint.TOWNS, null).toList(Town.class);
     }
 
 }
