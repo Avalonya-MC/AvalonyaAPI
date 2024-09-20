@@ -13,7 +13,4 @@ message Player {
   int64 firstLogin = 4;
   string lastIp = 5;
   double money = 6;
-
 }
-
-//protoc -I=/Users/charles/IdeaProjects/AvalonyaAPI/ --java_out=/Users/charles/IdeaProjects/AvalonyaAPI/src/main/java/eu/avalonya/api/protobuf /Users/charles/IdeaProjects/AvalonyaAPI/avalonya.proto
