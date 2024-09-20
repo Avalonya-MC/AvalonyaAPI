@@ -3,6 +3,8 @@ package eu.avalonya.api;
 import com.google.gson.Gson;
 import eu.avalonya.api.command.DemoCommand;
 import eu.avalonya.api.models.AvalonyaDatabase;
+import eu.avalonya.api.redis.RedisConfiguration;
+import eu.avalonya.api.redis.RedisDatabase;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
@@ -24,10 +26,14 @@ public class AvalonyaAPI extends JavaPlugin
 
     private static AvalonyaDatabase avalonyaDatabase;
 
+    private RedisDatabase redisDatabase;
+
     @Override
     public void onEnable()
     {
         instance = this;
+
+        redisDatabase = new RedisDatabase(new RedisConfiguration()); //Empty config for test purposes
 
         new CustomConfigFile(AvalonyaAPI.getInstance(), "backend.yml", "backend");
         CustomConfigFile sqlConfig = new CustomConfigFile(AvalonyaAPI.getInstance(), "database.yml", "sql");
@@ -87,4 +93,7 @@ public class AvalonyaAPI extends JavaPlugin
         return gson;
     }
 
+    public RedisDatabase getRedisDatabase() {
+        return redisDatabase;
+    }
 }

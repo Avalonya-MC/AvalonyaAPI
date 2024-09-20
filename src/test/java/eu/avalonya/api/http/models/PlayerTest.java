@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.gson.Gson;
 import eu.avalonya.api.http.Endpoint;
+import eu.avalonya.api.player.Player;
 import org.junit.jupiter.api.Test;
 
 public class PlayerTest {

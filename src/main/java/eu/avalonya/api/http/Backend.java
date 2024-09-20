@@ -5,7 +5,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import lombok.SneakyThrows;
 
-public class Backend {
+public class
+Backend {
 
     public final static String BACKEND_URL = ConfigFilesManager.getFile("backend").get()
         .getString("url");
