@@ -9,41 +9,43 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BooleanArgumentTest {
+class ChoiceArgumentTest {
 
-    private BooleanArgument argument;
+    private ChoiceArgument argument;
 
     @BeforeEach
     void setUp() {
-        argument = new BooleanArgument();
+        argument = new ChoiceArgument(
+                List.of("one", "two", "three")
+        );
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1", "0", "bad"})
+    @ValueSource(strings = {"Two", "ONE", "four"})
     void testBadInput(String input) {
         assertFalse(argument.test(input));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"true", "false", "True", "fAlse", "TRUE", "FALSE"})
+    @ValueSource(strings = {"one", "two", "three"})
     void testValidInput(String input) {
         assertTrue(argument.test(input));
     }
 
     @Test
     void testGetCompletion() {
-        assertIterableEquals(List.of("true", "false"), argument.getCompletions());
+        assertIterableEquals(List.of("one", "two", "three"), argument.getCompletions());
     }
 
     @Test
     void testGetUsage() {
-        assertEquals("boolean", argument.getUsage());
+        assertEquals("one|two|three", argument.getUsage());
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    void testGetValue(Boolean value) {
-        argument.setInput(value.toString());
+    @ValueSource(strings = {"one", "two"})
+    void testGetValue(String value) {
+        argument.setInput(value);
 
         assertEquals(value, argument.get());
     }
@@ -55,5 +57,5 @@ class BooleanArgumentTest {
 
         assertEquals(value, argument.isRequired());
     }
-
+  
 }
