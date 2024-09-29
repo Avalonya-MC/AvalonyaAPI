@@ -1,40 +1,50 @@
 package eu.avalonya.api.command;
 
-import eu.avalonya.api.AvalonyaAPI;
-import org.bukkit.command.CommandSender;
+import eu.avalonya.api.command.arguments.BooleanArgument;
+import eu.avalonya.api.command.arguments.PlayerArgument;
+import eu.avalonya.api.command.arguments.RegexArgument;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
-public class DemoCommand extends BaseCommand
+public class DemoCommand extends BaseCommand<Player>
 {
 
     public DemoCommand()
     {
         super("demo");
 
-        addSubCommand("sub", this::subRun);
-        addSubCommand("sub2", this::subRun2, "demo.sub2");
-        addSubCommand("give", this::giveRun, 5);
-        setCooldown(5);
+        // Add sub commands
+        addSubCommand(BaseCommand.newSubCommand("sub", (sender, args) -> {
+            sender.sendMessage("sub command");
+        }));
+        addSubCommand(sub2());
+
+        // Add arguments
+        addArgument(PlayerArgument.class, true);
+        addArgument(BooleanArgument.class, true);
+        addArgument(new RegexArgument("[a-zA-Z_]+", true));
     }
 
     @Override
-    public void run(CommandSender sender, SenderType senderType, String[] args)
+    public void run(Player sender, ArgumentCollection args)
     {
-        sender.sendMessage("Hello, world!");
+        sender.sendMessage("oui");
+        sender.sendMessage("Hello " + args.get(0, OfflinePlayer.class).getName());
+        sender.sendMessage("You are " + args.get(1, Boolean.class) + " years old");
+
+        sender.sendMessage("Il y a " + args.getRest().size() + " arguments restants");
     }
 
-    private void subRun(CommandSender sender, SenderType senderType, String[] args)
+    private BaseCommand<ConsoleCommandSender> sub2()
     {
-        sender.sendMessage("Hello, sub world!");
-    }
+        BaseCommand<ConsoleCommandSender> sub = BaseCommand.newSubCommand("sub2", (sender, args) -> {
+            sender.sendMessage("sub2 command");
+        });
 
-    private void subRun2(CommandSender sender, SenderType senderType, String[] args)
-    {
-        sender.sendMessage("Hello, sub world 2!");
-    }
+        sub.setCooldown(5);
+        sub.addArgument(BooleanArgument.class, true);
 
-    private void giveRun(CommandSender sender, SenderType senderType, String[] args)
-    {
-        sender.addAttachment(AvalonyaAPI.getInstance(), "demo.sub2", true, 1000);
+        return sub;
     }
-
 }

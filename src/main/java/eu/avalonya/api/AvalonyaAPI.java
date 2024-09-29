@@ -1,22 +1,26 @@
 package eu.avalonya.api;
 
-import eu.avalonya.api.command.BaseCommand;
 import eu.avalonya.api.command.DemoCommand;
+import eu.avalonya.api.models.AvalonyaDatabase;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import eu.avalonya.api.utils.CustomConfigFile;
 import eu.avalonya.api.utils.PermissionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.sql.SQLException;
 
 public class AvalonyaAPI extends JavaPlugin
 {
 
     private static AvalonyaAPI instance;
     private static SQL sqlInstance;
+
+    private static AvalonyaDatabase avalonyaDatabase;
 
     @Override
     public void onEnable()
@@ -33,9 +37,24 @@ public class AvalonyaAPI extends JavaPlugin
 
         manageMigration();
 
-        BaseCommand.register(this, new DemoCommand());
+        new DemoCommand().register(this);
 
         PermissionManager.loadPermissionsFromConfigFileToCache();
+
+        try
+        {
+            avalonyaDatabase = new AvalonyaDatabase("jdbc:mysql://" + fSql.getString("host") + "/" + fSql.getString("database") + "?autoreconnect=true", fSql.getString("user"), fSql.getString("password"));
+        }
+        catch (SQLException e)
+        {
+            this.getLogger().severe(e.getMessage());
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
+    }
+
+    public static AvalonyaDatabase getDb()
+    {
+        return avalonyaDatabase;
     }
 
     public void manageMigration()
