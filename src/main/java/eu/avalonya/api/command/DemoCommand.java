@@ -41,7 +41,7 @@ public class DemoCommand extends BaseCommand<Player>
         sender.sendMessage("Il y a " + args.getRest().size() + " arguments restants");
 
 //        sender.sendMessage("size : " + args.size());
-//        sender.sendMessage("arg " + args.get(0));
+//        sender.sendMessage("arg " + args.get(0).get());
     }
 
     private BaseCommand<ConsoleCommandSender> sub2()

@@ -190,10 +190,6 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
                         );
                         return true;
                     }
-                    else
-                    {
-                        this.arguments.remove(argument);
-                    }
                 }
                 else {
                     if (!argument.test(args[i])) {
