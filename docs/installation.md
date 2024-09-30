@@ -10,7 +10,7 @@ Suivez ces étapes pour installer et configurer l'AvalonyaAPI sur votre serveur 
 ## Étape 2: Configurer la base de données
 
 1. Créez une base de données MySQL.
-2. Modifiez le fichier `config.yml` dans le dossier `plugins/AvalonyaAPI/` pour y insérer vos informations de connexion à la base de données :
+2. Modifiez le fichier `database.yml` dans le dossier `plugins/AvalonyaAPI/` pour y insérer vos informations de connexion à la base de données :
 
 ```yaml
 database:
