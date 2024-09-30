@@ -16,6 +16,9 @@ public class ArgumentCollection implements Iterable<Argument<?>>
     {
         arguments.add(argument);
     }
+    public void remove(Argument<?> argument) {
+        arguments.remove(argument);
+    }
 
     public Argument<?> get(int index)
     {

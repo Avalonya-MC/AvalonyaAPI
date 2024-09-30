@@ -190,15 +190,20 @@ public abstract class BaseCommand<T extends CommandSender> implements CommandExe
                         );
                         return true;
                     }
+                    else
+                    {
+                        this.arguments.remove(argument);
+                    }
                 }
-                if (!argument.test(args[i]))
-                {
-                    sender.sendMessage(
-                            Component.text(args[i] + " n'est pas un argument valide.").color(NamedTextColor.RED)
-                    );
-                    return true;
+                else {
+                    if (!argument.test(args[i])) {
+                        sender.sendMessage(
+                                Component.text(args[i] + " n'est pas un argument valide.").color(NamedTextColor.RED)
+                        );
+                        return true;
+                    }
+                    argument.setInput(args[i]);
                 }
-                argument.setInput(args[i]);
                 i++;
             }
 
