@@ -22,14 +22,10 @@ public class ArgumentCollection implements Iterable<Argument<?>>
 
     public Argument<?> get(int index)
     {
-        try
-        {
-            return arguments.get(index);
-        }
-        catch (IndexOutOfBoundsException e)
-        {
+        if (index < 0 || index >= arguments.size()) {
             return null;
         }
+        return arguments.get(index);
     }
 
     public <T> T get(int index, Class<T> type)
@@ -59,6 +55,10 @@ public class ArgumentCollection implements Iterable<Argument<?>>
     public void addRest(String rest)
     {
         this.rest.add(rest);
+    }
+
+    public void clear() {
+        arguments.clear();
     }
 
     /**
