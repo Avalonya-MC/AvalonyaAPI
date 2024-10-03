@@ -15,7 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
-public abstract class BaseMenu extends FastInv {
+public abstract class BaseMenu extends FastInv
+{
 
     public final static ItemStack DEFAULT_BORDER_ITEM = new CustomItemStack(Material.BLUE_STAINED_GLASS_PANE, " ");
     public final static ItemStack DEFAULT_BACKGROUND_ITEM = new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, " ");
