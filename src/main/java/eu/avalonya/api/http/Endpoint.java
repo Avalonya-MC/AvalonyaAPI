@@ -3,7 +3,6 @@ package eu.avalonya.api.http;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Map;
 
 public enum Endpoint {
