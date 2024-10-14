@@ -3,6 +3,9 @@ package eu.avalonya.api.http;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.Map;
+
 public enum Endpoint {
 
     // POST
@@ -54,5 +57,20 @@ public enum Endpoint {
         endpoint.setPath(path);
 
         return endpoint;
+    }
+
+    public Endpoint bindAssoc(Map<String, String> params) {
+        String path = this.getPath();
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            path.replace(key, value);
+        }
+
+        this.setPath(path);
+
+        return this;
     }
 }

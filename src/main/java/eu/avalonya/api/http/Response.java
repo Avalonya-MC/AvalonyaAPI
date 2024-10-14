@@ -6,13 +6,4 @@ import java.util.List;
 
 public record Response(int status, String body) {
 
-    public <T> T to(Class<T> clazz) {
-        return AvalonyaAPI.getGson().fromJson(this.body, clazz);
-    }
-
-    public <T> List<T> toList(Class<T> clazz) {
-        return AvalonyaAPI.getGson().fromJson(this.body, new TypeToken<List<T>>() {
-        }.getType());
-    }
-
 }
