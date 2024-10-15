@@ -3,9 +3,15 @@ package eu.avalonya.api.http;
 import eu.avalonya.api.utils.ConfigFilesManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import lombok.SneakyThrows;
 
 public class Backend {
+
+    private static Map<Endpoint, Callable<Response>> fakeRequests = new HashMap<>();
 
     public final static String BACKEND_URL = ConfigFilesManager.getFile("backend").get()
         .getString("url");
@@ -28,6 +34,11 @@ public class Backend {
 
     @SneakyThrows
     public static Response request(String method, Endpoint endpoint, String body) {
+
+        if (fakeRequests.containsKey(endpoint)) {
+            return fakeRequests.get(endpoint).call();
+        }
+
         URL url = new URL(BACKEND_URL + endpoint.getPath());
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -49,6 +60,10 @@ public class Backend {
         con.disconnect();
 
         return new Response(status, response);
+    }
+
+    public static void fake(Map<Endpoint, Callable<Response>> requests) {
+        fakeRequests = requests;
     }
 
 }

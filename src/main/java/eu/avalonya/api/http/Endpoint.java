@@ -58,7 +58,7 @@ public enum Endpoint {
         return endpoint;
     }
 
-    public Endpoint bindAssoc(Map<String, String> params) {
+    public void bindAssoc(Map<String, String> params) {
         String path = this.getPath();
 
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -70,6 +70,5 @@ public enum Endpoint {
 
         this.setPath(path);
 
-        return this;
     }
 }
