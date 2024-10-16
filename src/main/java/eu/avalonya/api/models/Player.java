@@ -28,7 +28,7 @@ public class Player extends AbstractModel {
 
     @Override
     public Pair<String, String> getId() {
-        return Pair.of("id", this.uuid);
+        return Pair.of("player_id", this.uuid);
     }
 
     @Override
@@ -36,15 +36,4 @@ public class Player extends AbstractModel {
         return Map.of();
     }
 
-    @Override
-    public Map<String, Object> serialize() {
-        return Map.of(
-                "uuid", this.uuid,
-                "pseudo", this.pseudo,
-                "rankId", this.rankId,
-                "firstLogin", this.firstLogin,
-                "lastIp", this.lastIp,
-                "money", this.money
-        );
-    }
 }

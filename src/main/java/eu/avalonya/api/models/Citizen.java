@@ -4,6 +4,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.items.ItemAccess;
+import it.unimi.dsi.fastutil.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,96 +16,29 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Citizen model class that represents a citizen in the Avalonya api.
  */
-@DatabaseTable(tableName = "citizens")
 @Getter
-public class Citizen implements ItemAccess
-{
+@Setter
+public class Citizen extends AbstractModel {
 
-    @DatabaseField(generatedId = true)
-    private int id;
-
-    @DatabaseField(canBeNull = false, columnName = "uuid", foreign = true, foreignAutoRefresh = true)
-    private AvalonyaPlayer player;
-
-    @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
-    @Setter
-    private float money;
-
-    @DatabaseField(columnName= "joined_at")
-    @Setter
-    private Date joinedAt;
-
-    @DatabaseField(columnName = "town_id", foreign = true, foreignAutoRefresh = true)
+    private String uuid;
     private Town town;
+    private long joinedAt;
 
-    @DatabaseField(columnName = "role")
-    @Getter(AccessLevel.NONE)
-    private int role;
-
-    @Getter(AccessLevel.NONE)
-    private ItemStack playerHead;
-
-    public Citizen()
-    {
-        // Required by ORMLite
-    }
-
-    public Citizen(AvalonyaPlayer player) {
-        this.player = player;
-        this.playerHead = new ItemStack(Material.PLAYER_HEAD);
-
-        final SkullMeta itemMeta = (SkullMeta) playerHead.getItemMeta();
-
-        if (itemMeta != null) {
-            itemMeta.setOwningPlayer(player.getPlayer());
-            itemMeta.displayName(Component.text("§f" + player.getPseudo()));
-            playerHead.setItemMeta(itemMeta);
-        }
-    }
-
-    public boolean isMayor() {
-        return town.getMayor().equals(this);
-    }
-
-    public void setTown(Town town) {
-        this.town = town;
-        this.joinedAt = new Date();
-    }
-
-    public boolean isPlayer(Player player) {
-        final Player p = this.player.getPlayer();
-
-        if (p == null) {
-            return false;
-        }
-
-        return p.equals(player);
-    }
-
-    public void setRole(Role roleId)
-    {
-        this.role = roleId.ordinal();
-    }
-
-    public Role getRole()
-    {
-        return Role.values()[role];
+    @Override
+    public Pair<String, String> getId() {
+        return Pair.of("citizen_id", uuid);
     }
 
     @Override
-    public ItemStack toItemStack() {
-        return playerHead;
+    public Map<String, String> getRepositoryAttributes() {
+        return Map.of(
+                "name", town.getName()
+        );
     }
 
-    public boolean equals(Citizen citizen) {
-        if (citizen == null) {
-            return false;
-        }
-
-        return citizen.getPlayer().getPseudo().equals(player.getPseudo()) && citizen.getJoinedAt().equals(joinedAt);
-    }
 }

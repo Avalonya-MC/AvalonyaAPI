@@ -2,16 +2,11 @@ package eu.avalonya.api.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import eu.avalonya.api.models.dao.TownDao;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.checkerframework.checker.guieffect.qual.SafeEffect;
-
-import java.sql.SQLException;
 
 /**
  * Un plot est une parcelle de terrain (un chunk) qui peut être achetée par un joueur,

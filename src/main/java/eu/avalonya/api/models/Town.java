@@ -4,7 +4,6 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.items.ItemAccess;
-import eu.avalonya.api.models.dao.CitizenDao;
 import eu.avalonya.api.models.dao.PlotDao;
 import lombok.Getter;
 import lombok.Setter;
@@ -197,34 +196,6 @@ public class Town implements ItemAccess {
         {
             e.printStackTrace(); // TODO: Utiliser le logger
         }
-    }
-
-    public Citizen getMayor()
-    {
-        try
-        {
-            return CitizenDao.getByRole(this, Role.MAYOR.ordinal()).get(0);
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace(); // TODO: Utiliser le logger
-        }
-
-        return null;
-    }
-
-    public List<Citizen> getCitizens()
-    {
-        try
-        {
-            return CitizenDao.getByTown(this);
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace(); // TODO: Utiliser le logger
-        }
-
-        return new ArrayList<>();
     }
 
     public boolean hasTaxesEnabled() {

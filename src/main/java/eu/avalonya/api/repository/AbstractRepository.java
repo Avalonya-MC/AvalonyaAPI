@@ -1,18 +1,40 @@
 package eu.avalonya.api.repository;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.http.Backend;
 import eu.avalonya.api.http.Endpoint;
+import eu.avalonya.api.http.Response;
 import eu.avalonya.api.models.AbstractModel;
 import redis.clients.jedis.UnifiedJedis;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractRepository<T extends AbstractModel> {
 
     private final UnifiedJedis jedis;
+    private final Class<T> clazz;
+    private final List<String> vars;
 
-    public AbstractRepository(final UnifiedJedis jedis) {
+    public AbstractRepository(final UnifiedJedis jedis, List<String> vars) {
         this.jedis = jedis;
+        this.vars = vars;
+        this.clazz = (Class<T>) ((ParameterizedType)getClass().getGenericSuperclass())
+                        .getActualTypeArguments()[0];
+    }
+
+    public List<T> all() {
+        if (!getEndpoints().containsKey("all")) {
+            return null; // TODO: Throw a exception
+        }
+
+        Endpoint endpoint = Endpoint.bind(getEndpoints().get("all"), this.vars);
+        Response response = Backend.get(endpoint, null);
+
+        return gson().fromJson(response.body(), new TypeToken<List<T>>() {}.getType());
     }
 
     public T get(final String id) {
@@ -20,18 +42,22 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             return null; // TODO: Throw a exception
         }
 
-        String result = jedis.get(getClass() + id); // getClass() != model class
+        String model = jedis.get(clazz + id);
 
-        if (result == null) {
-            return null;
+        if (model == null) {
+            Endpoint endpoint = Endpoint.bind(getEndpoints().get("get"), this.vars);
+            Response response = Backend.get(endpoint, null);
+
+            jedis.set(clazz + id, response.body());
+            return gson().fromJson(response.body(), clazz);
         }
 
-        return null; // TODO: Deserialize string
+        return gson().fromJson(model, clazz);
     }
 
     public T save(final T entity) {
         Map<String, String> params = entity.getRepositoryAttributes();
-        String serialized = jsonSerialize(entity);
+        String serialized = AvalonyaAPI.getGson().toJson(entity);
 
         jedis.set(entity.getClass() + entity.getId().value(), serialized);
 
@@ -46,8 +72,6 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             endpoint.bindAssoc(params);
 
             Backend.put(endpoint, serialized);
-
-            return entity;
         } else {
             if (!getEndpoints().containsKey("create")) {
                 // TODO: Throw a exception
@@ -59,30 +83,29 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             Backend.post(endpoint, serialized);
 
             entity.setCreated(true);
-
-            return entity;
         }
+
+        return entity;
     }
 
-    public void delete(final String id) {
-        // TODO: Unimplemented
+    public void delete(final T entity) {
+        if (!getEndpoints().containsKey("delete")) {
+            // TODO: Throw a exception
+        }
+
+        Map<String, String> params = entity.getRepositoryAttributes();
+
+        jedis.del(entity.getClass() + entity.getId().value());
+
+        Endpoint endpoint = getEndpoints().get("create");
+        endpoint.bindAssoc(params);
+
+        Backend.delete(endpoint);
     }
 
     public abstract Map<String, Endpoint> getEndpoints();
 
-    private String jsonSerialize(final T entity) {
-        StringBuilder builder = new StringBuilder();
-        Map<String, Object> serialized = entity.serialize();
-
-        builder.append("{");
-
-        for (Map.Entry<String, Object> entry : serialized.entrySet()) {
-            builder.append(entry.getKey()).append(":").append(entry.getValue()).append(",");
-        }
-
-        builder.deleteCharAt(builder.length() - 1);
-        builder.append("}");
-
-        return builder.toString();
+    protected Gson gson() {
+        return AvalonyaAPI.getGson();
     }
 }

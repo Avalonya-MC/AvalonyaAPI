@@ -1,6 +1,5 @@
 package eu.avalonya.api.models;
 
-import eu.avalonya.api.models.serialization.ModelSerializable;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 @Setter
-public abstract class AbstractModel implements ModelSerializable {
+public abstract class AbstractModel {
 
     private boolean created = false;
 
