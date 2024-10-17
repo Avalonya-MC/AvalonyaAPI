@@ -2,15 +2,14 @@ package eu.avalonya.api.repository;
 
 import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.models.Player;
-import redis.clients.jedis.UnifiedJedis;
 
 import java.util.List;
 import java.util.Map;
 
 public class PlayerRepository extends AbstractRepository<Player> {
 
-    public PlayerRepository(UnifiedJedis jedis, List<String> vars) {
-        super(jedis, vars);
+    public PlayerRepository(List<String> vars) {
+        super(vars);
     }
 
     @Override
