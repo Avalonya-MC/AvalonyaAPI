@@ -1,6 +1,5 @@
 package eu.avalonya.api.inventory;
 
-import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.items.CustomItemStack;
 import org.bukkit.inventory.ItemStack;
 
