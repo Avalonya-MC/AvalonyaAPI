@@ -6,7 +6,9 @@ import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.items.ItemAccess;
 import eu.avalonya.api.models.dao.PlotDao;
 import eu.avalonya.api.repository.CitizenRepository;
+import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
@@ -21,75 +23,24 @@ import java.util.*;
 /**
  * Town model class that represents a town in the Avalonya api.
  */
-@DatabaseTable(tableName = "towns")
-public class Town implements ItemAccess {
+@Getter
+@Setter
+@NoArgsConstructor
+public class Town extends AbstractModel implements ItemAccess {
 
-    @DatabaseField(generatedId = true)
-    @Getter
     private int id;
-
-    @DatabaseField(canBeNull = false, unique = true)
-    @Getter
-    @Setter
     private String name;
-
-    @DatabaseField(columnName = "politics", defaultValue = "")
-    @Getter
-    @Setter
     private String politicalStatus = "";
-
-    @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
-    @Getter
     private float money = 0.0f;
-
-    @DatabaseField(defaultValue = "0", dataType = DataType.FLOAT)
-    @Getter
-    @Setter
     private float taxes = 0.0f;
-
-    @DatabaseField(columnName = "taxes_enabled", defaultValue = "false", dataType = DataType.BOOLEAN)
-    @Setter
     private boolean taxesEnabled = false;
-
-    @DatabaseField(columnName = "spawn_hostile_mob", defaultValue = "false", dataType = DataType.BOOLEAN)
-    @Setter
     private boolean spawnHostileMob = false;
-
-    @DatabaseField(columnName = "fire_spread", defaultValue = "false", dataType = DataType.BOOLEAN)
-    @Setter
     private boolean fireSpread = false;
-
-    @DatabaseField(columnName = "explosions", defaultValue = "false", dataType = DataType.BOOLEAN)
-    @Setter
     private boolean explosions = false;
-
-    @DatabaseField(columnName = "public", defaultValue = "false", dataType = DataType.BOOLEAN)
     private boolean publicTown = false;
-
-    @DatabaseField(columnName = "friendly_fire", defaultValue = "false", dataType = DataType.BOOLEAN)
-    @Setter
     private boolean friendlyFire = false;
-
-    @DatabaseField(columnName = "spawn_location", dataType = DataType.STRING)
-    @Getter
-    @Setter
     private String spawnLocation;
-
-    @DatabaseField(columnName= "created_at")
-    @Getter
     private Date createdAt;
-
-    public Town()
-    {
-        this.createdAt = new Date();
-        // Required by ORMLite
-    }
-
-    public Town(String name)
-    {
-        this.name = name;
-        this.createdAt = new Date();
-    }
 
     public CitizenRepository getCitizens() {
         return new CitizenRepository(List.of(this.name));
@@ -243,4 +194,22 @@ public class Town implements ItemAccess {
         return item;
     }
 
+    @Override
+    public Pair<String, String> getId() {
+        return Pair.of("town_name", this.name);
+    }
+
+    @Override
+    public Map<String, String> getRepositoryAttributes() {
+        return Map.of(
+                "town_name", this.name
+        );
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+        return Map.of(
+                "name", this.name
+        );
+    }
 }

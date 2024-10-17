@@ -1,12 +1,16 @@
 package eu.avalonya.api.models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import eu.avalonya.api.AvalonyaAPI;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.permissions.Permission;
 
 @Getter
 @Setter
@@ -26,6 +30,43 @@ public class Player extends AbstractModel {
 
     public org.bukkit.entity.Player getBukkitPlayer() {
         return Bukkit.getPlayer(this.uuid);
+    }
+
+    public void setPermissions(List<String> permissions) {
+
+        org.bukkit.entity.Player bukkitPlayer = getBukkitPlayer();
+
+        for (String perm : permissions) {
+            if (perm.contains("*")) // Donne au joueur toutes les permissions pour les commandes de bases
+            {
+                for (Permission perms : getAllDefaultPerms()) {
+                    bukkitPlayer.addAttachment(AvalonyaAPI.getInstance()).setPermission(perms.getName(), true);
+                }
+            } else {
+                bukkitPlayer.addAttachment(AvalonyaAPI.getInstance()).setPermission(perm, true);
+            }
+        }
+        bukkitPlayer.recalculatePermissions();
+        bukkitPlayer.updateCommands();
+    }
+
+    /**
+     * Retourne la liste de toutes les permissions de toutes les commandes par default (comme par exemple /gamemode, /stop, etc..)
+     *
+     * @return Liste de permissions
+     */
+    public List<Permission> getAllDefaultPerms() {
+        List<Permission> perms = new ArrayList<>();
+        for (Permission perm : Bukkit.getPluginManager().getPermissions()) {
+            if (!perms.contains(perm)) {
+                perms.add(perm);
+            }
+        }
+        return perms;
+    }
+
+    public String getChatFormat() {
+        return this.getRank().getPrefixChat() + this.getBukkitPlayer().getName() + this.getRank().getColorChat() + " » ";
     }
 
     @Override
