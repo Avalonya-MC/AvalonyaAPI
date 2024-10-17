@@ -7,7 +7,6 @@ import eu.avalonya.api.http.Backend;
 import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.http.Response;
 import eu.avalonya.api.models.AbstractModel;
-import redis.clients.jedis.UnifiedJedis;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -15,12 +14,10 @@ import java.util.Map;
 
 public abstract class AbstractRepository<T extends AbstractModel> {
 
-    private final UnifiedJedis jedis;
     private final Class<T> clazz;
     private final List<String> vars;
 
-    public AbstractRepository(final UnifiedJedis jedis, List<String> vars) {
-        this.jedis = jedis;
+    public AbstractRepository(List<String> vars) {
         this.vars = vars;
         this.clazz = (Class<T>) ((ParameterizedType)getClass().getGenericSuperclass())
                         .getActualTypeArguments()[0];
@@ -42,24 +39,15 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             return null; // TODO: Throw a exception
         }
 
-        String model = jedis.get(clazz + id);
+        Endpoint endpoint = Endpoint.bind(getEndpoints().get("get"), this.vars);
+        Response response = Backend.get(endpoint, null);
 
-        if (model == null) {
-            Endpoint endpoint = Endpoint.bind(getEndpoints().get("get"), this.vars);
-            Response response = Backend.get(endpoint, null);
-
-            jedis.set(clazz + id, response.body());
-            return gson().fromJson(response.body(), clazz);
-        }
-
-        return gson().fromJson(model, clazz);
+        return gson().fromJson(response.body(), clazz);
     }
 
     public T save(final T entity) {
         Map<String, String> params = entity.getRepositoryAttributes();
         String serialized = AvalonyaAPI.getGson().toJson(entity);
-
-        jedis.set(entity.getClass() + entity.getId().value(), serialized);
 
         if (entity.isCreated()) {
             if (!getEndpoints().containsKey("update")) {
@@ -94,8 +82,6 @@ public abstract class AbstractRepository<T extends AbstractModel> {
         }
 
         Map<String, String> params = entity.getRepositoryAttributes();
-
-        jedis.del(entity.getClass() + entity.getId().value());
 
         Endpoint endpoint = getEndpoints().get("create");
         endpoint.bindAssoc(params);
