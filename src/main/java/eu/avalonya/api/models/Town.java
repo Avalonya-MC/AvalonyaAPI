@@ -5,6 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.items.ItemAccess;
 import eu.avalonya.api.models.dao.PlotDao;
+import eu.avalonya.api.repository.CitizenRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -88,6 +89,10 @@ public class Town implements ItemAccess {
     {
         this.name = name;
         this.createdAt = new Date();
+    }
+
+    public CitizenRepository getCitizens() {
+        return new CitizenRepository(List.of(this.name));
     }
 
     public float deposit(float amount) {

@@ -41,4 +41,13 @@ public class Citizen extends AbstractModel {
         );
     }
 
+    public static Citizen deserialize(Map<String, Object> map) {
+        final Citizen citizen = new Citizen();
+
+        citizen.setUuid((String) map.get("uuid"));
+        citizen.setJoinedAt(Long.parseLong((String) map.get("joined_at")));
+
+        return citizen;
+    }
+
 }

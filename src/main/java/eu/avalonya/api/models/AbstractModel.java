@@ -18,4 +18,7 @@ public abstract class AbstractModel {
 
     public abstract Map<String, String> getRepositoryAttributes();
 
+    public static AbstractModel deserialize(Map<String, Object> data) {
+        throw new RuntimeException("deserialize method is not implemented yet");
+    }
 }

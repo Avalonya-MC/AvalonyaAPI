@@ -8,41 +8,49 @@ import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.http.Response;
 import eu.avalonya.api.models.AbstractModel;
 
-import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractRepository<T extends AbstractModel> {
 
-    private final Class<T> clazz;
     private final List<String> vars;
 
     public AbstractRepository(List<String> vars) {
         this.vars = vars;
-        this.clazz = (Class<T>) ((ParameterizedType)getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0];
     }
 
     public List<T> all() {
         if (!getEndpoints().containsKey("all")) {
-            return null; // TODO: Throw a exception
+            throw new RuntimeException("You cannot all this model.");
         }
 
         Endpoint endpoint = Endpoint.bind(getEndpoints().get("all"), this.vars);
         Response response = Backend.get(endpoint, null);
 
-        return gson().fromJson(response.body(), new TypeToken<List<T>>() {}.getType());
+        List<Map<String, Object>> objs = gson().fromJson(response.body(), new TypeToken<List<Map<String, Object>>>() {
+        }.getType());
+        List<T> models = new ArrayList<>();
+
+        for (Map<String, Object> data : objs) {
+            models.add((T) T.deserialize(data));
+        }
+
+        return models;
     }
 
     public T get(final String id) {
         if (!getEndpoints().containsKey("get")) {
-            return null; // TODO: Throw a exception
+            throw new RuntimeException("You cannot get this model.");
         }
 
         Endpoint endpoint = Endpoint.bind(getEndpoints().get("get"), this.vars);
         Response response = Backend.get(endpoint, null);
 
-        return gson().fromJson(response.body(), clazz);
+        Map<String, Object> data = gson().fromJson(response.body(), new TypeToken<Map<String, Object>>() {
+        }.getType());
+
+        return (T) T.deserialize(data);
     }
 
     public T save(final T entity) {
@@ -51,7 +59,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
         if (entity.isCreated()) {
             if (!getEndpoints().containsKey("update")) {
-                // TODO: Throw a exception
+                throw new RuntimeException("You cannot update this model.");
             }
 
             params.put(entity.getId().key(), entity.getId().value());
@@ -62,7 +70,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             Backend.put(endpoint, serialized);
         } else {
             if (!getEndpoints().containsKey("create")) {
-                // TODO: Throw a exception
+                throw new RuntimeException("You cannot create this model.");
             }
 
             Endpoint endpoint = getEndpoints().get("create");
@@ -78,7 +86,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
     public void delete(final T entity) {
         if (!getEndpoints().containsKey("delete")) {
-            // TODO: Throw a exception
+            throw new RuntimeException("You cannot delete this model.");
         }
 
         Map<String, String> params = entity.getRepositoryAttributes();
