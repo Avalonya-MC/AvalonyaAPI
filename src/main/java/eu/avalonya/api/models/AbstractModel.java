@@ -22,4 +22,13 @@ public abstract class AbstractModel implements ModelSerialization {
     public static AbstractModel deserialize(Map<String, Object> data) {
         throw new RuntimeException("deserialize method is not implemented yet");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AbstractModel model) {
+            return model.getId().value().equals(getId().value());
+        }
+
+        return false;
+    }
 }

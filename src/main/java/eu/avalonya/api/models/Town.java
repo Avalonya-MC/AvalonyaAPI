@@ -5,7 +5,9 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import eu.avalonya.api.items.ItemAccess;
 import eu.avalonya.api.models.dao.PlotDao;
+import eu.avalonya.api.models.enums.TownPermission;
 import eu.avalonya.api.repository.CitizenRepository;
+import eu.avalonya.api.repository.PlotRepository;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,12 +35,7 @@ public class Town extends AbstractModel implements ItemAccess {
     private String politicalStatus = "";
     private float money = 0.0f;
     private float taxes = 0.0f;
-    private boolean taxesEnabled = false;
-    private boolean spawnHostileMob = false;
-    private boolean fireSpread = false;
-    private boolean explosions = false;
-    private boolean publicTown = false;
-    private boolean friendlyFire = false;
+    private int permissions = 0;
     private String spawnLocation;
     private Date createdAt;
 
@@ -66,46 +63,8 @@ public class Town extends AbstractModel implements ItemAccess {
         return taxes;
     }
 
-    public List<Plot> getPlots()
-    {
-        try {
-            return PlotDao.getPlots(this);
-        } catch (SQLException e) {
-            e.printStackTrace(); // TODO: Utiliser le logger
-        }
-
-        return new ArrayList<>();
-    }
-
-    /**
-     * Ajoute un chunk à la ville ou change le propriétaire du chunk si il est déjà revendiqué.
-     * @param chunk
-     */
-    public void addPlot(Chunk chunk)
-    {
-        try
-        {
-            if (PlotDao.isClaimed(chunk))
-            {
-                Plot plot = PlotDao.getPlot(chunk);
-
-                if (plot.getTown().equals(this))
-                {
-                    return;
-                }
-
-                plot.setTown(this);
-                PlotDao.update(plot);
-            }
-            else
-            {
-                PlotDao.create(this, chunk);
-            }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace(); // TODO: Utiliser le logger
-        }
+    public PlotRepository getPlots() {
+        return new PlotRepository(List.of(this.name));
     }
 
     /**
@@ -124,7 +83,7 @@ public class Town extends AbstractModel implements ItemAccess {
                 return;
             }
 
-            addPlot(chunk);
+            this.getPlots().save(new Plot(chunk, this));
         }
         catch (SQLException e)
         {
@@ -154,32 +113,12 @@ public class Town extends AbstractModel implements ItemAccess {
         }
     }
 
-    public boolean hasTaxesEnabled() {
-        return taxesEnabled;
+    public boolean hasPermission(TownPermission permission) {
+        return (this.permissions & (1 << permission.ordinal())) != 0;
     }
 
-    public boolean hasSpawnHostileMob() {
-        return spawnHostileMob;
-    }
-
-    public boolean hasFireSpread() {
-        return fireSpread;
-    }
-
-    public boolean hasExplosions() {
-        return explosions;
-    }
-
-    public void setPublic(boolean publicTown) {
-        this.publicTown = publicTown;
-    }
-
-    public boolean isPublic() {
-        return publicTown;
-    }
-
-    public boolean hasFriendlyFire() {
-        return friendlyFire;
+    public void addPermission(TownPermission permission) {
+        this.permissions |= (1 << permission.ordinal());
     }
 
     @Override

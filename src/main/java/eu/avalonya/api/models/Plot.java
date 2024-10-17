@@ -1,7 +1,9 @@
 package eu.avalonya.api.models;
 
-import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import eu.avalonya.api.models.enums.PlotPermission;
+import eu.avalonya.api.models.enums.PlotType;
+import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,9 +17,8 @@ import java.util.Map;
  * avoir différents types ainsi que des permissions spécifiques.
  *
  * @version 1.0
- * @see eu.avalonya.api.models.PlotType
+ * @see PlotType
  */
-@DatabaseTable(tableName = "plots")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,8 +39,24 @@ public class Plot extends AbstractModel {
         this.town = town;
     }
 
+    public Pair<String, String> getId() {
+        return Pair.of("plot_id", String.valueOf(id));
+    }
+
     public Chunk getChunk(World world) {
         return world.getChunkAt(x, z);
+    }
+
+    public boolean isType(PlotType type) {
+        return this.type == type.ordinal();
+    }
+
+    public boolean hasPermission(PlotPermission permission) {
+        return (this.permissions & (1 << permission.ordinal())) != 0;
+    }
+
+    public void addPermission(PlotPermission permission) {
+        this.permissions |= (1 << permission.ordinal());
     }
 
     @Override
@@ -61,5 +78,17 @@ public class Plot extends AbstractModel {
                 "type", this.type,
                 "permissions", this.permissions
         );
+    }
+
+    public static Plot deserialize(Map<String, Object> data) {
+        Plot plot = new Plot();
+
+        plot.setId(Double.valueOf((double) data.get("id")).intValue());
+        plot.setName((String) data.get("name"));
+        plot.setTown((Town) data.get("town"));
+        plot.setOutpost((Boolean) data.get("is_outpost"));
+        plot.setPermissions((Integer) data.get("permissions"));
+
+        return plot;
     }
 }

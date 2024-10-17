@@ -72,7 +72,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
     }
 
     public T save(final T entity) {
-        Map<String, String> params = entity.getRepositoryAttributes();
+        List<String> params = new ArrayList<>(this.vars);
         String serialized = AvalonyaAPI.getGson().toJson(entity.serialize());
 
         if (entity.isCreated()) {
@@ -80,10 +80,9 @@ public abstract class AbstractRepository<T extends AbstractModel> {
                 throw new RuntimeException("You cannot update this model.");
             }
 
-            params.put(entity.getId().key(), entity.getId().value());
+            params.add(entity.getId().value());
 
-            Endpoint endpoint = getEndpoints().get("update");
-            endpoint.bindAssoc(params);
+            Endpoint endpoint = Endpoint.bind(getEndpoints().get("update"), params);
 
             Backend.put(endpoint, serialized);
         } else {
@@ -91,8 +90,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
                 throw new RuntimeException("You cannot create this model.");
             }
 
-            Endpoint endpoint = getEndpoints().get("create");
-            endpoint.bindAssoc(params);
+            Endpoint endpoint = Endpoint.bind(getEndpoints().get("create"), params);
 
             Backend.post(endpoint, serialized);
 
@@ -107,10 +105,11 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             throw new RuntimeException("You cannot delete this model.");
         }
 
-        Map<String, String> params = entity.getRepositoryAttributes();
+        List<String> params = new ArrayList<>(this.vars);
 
-        Endpoint endpoint = getEndpoints().get("create");
-        endpoint.bindAssoc(params);
+        params.add(entity.getId().value());
+
+        Endpoint endpoint = Endpoint.bind(getEndpoints().get("delete"), params);
 
         Backend.delete(endpoint);
     }

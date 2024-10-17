@@ -37,7 +37,11 @@ public enum Endpoint {
     // GET, POST
     CITIZENS(TOWNS_NAME.getPath() + "/citizens"),
     // DELETE
-    CITIZENS_ID("/citizens/{citizen_id}"),
+    CITIZENS_ID(TOWNS_NAME.getPath() + "/citizens/{citizen_id}"),
+    // GET, POST
+    TOWN_PLOTS(TOWNS_NAME.getPath() + "/plots"),
+    // PUT, DELETE
+    TOWN_PLOTS_ID(TOWNS_NAME.getPath() + "/plots/{plot_id}"),
     ;
 
     private static final String REGEX = "\\{[a-zA-Z0-9_]+}";
