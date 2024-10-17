@@ -9,7 +9,7 @@ import java.util.Map;
 public class PlayerRepository extends AbstractRepository<Player> {
 
     public PlayerRepository(List<String> vars) {
-        super(vars);
+        super(Player.class, vars);
     }
 
     @Override

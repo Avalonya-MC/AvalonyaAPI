@@ -8,18 +8,23 @@ import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.http.Response;
 import eu.avalonya.api.models.AbstractModel;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractRepository<T extends AbstractModel> {
 
+    private final Class<T> clazz;
     private final List<String> vars;
 
-    public AbstractRepository(List<String> vars) {
+    public AbstractRepository(Class<T> clazz, List<String> vars) {
         this.vars = vars;
+        this.clazz = clazz;
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> all() {
         if (!getEndpoints().containsKey("all")) {
             throw new RuntimeException("You cannot all this model.");
@@ -33,12 +38,19 @@ public abstract class AbstractRepository<T extends AbstractModel> {
         List<T> models = new ArrayList<>();
 
         for (Map<String, Object> data : objs) {
-            models.add((T) T.deserialize(data));
+            try {
+                Method method = this.clazz.getMethod("deserialize", Map.class);
+
+                models.add((T) method.invoke(null, data));
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return models;
     }
 
+    @SuppressWarnings("unchecked")
     public T get(final String id) {
         if (!getEndpoints().containsKey("get")) {
             throw new RuntimeException("You cannot get this model.");
@@ -50,12 +62,18 @@ public abstract class AbstractRepository<T extends AbstractModel> {
         Map<String, Object> data = gson().fromJson(response.body(), new TypeToken<Map<String, Object>>() {
         }.getType());
 
-        return (T) T.deserialize(data);
+        try {
+            Method method = this.clazz.getMethod("deserialize", Map.class);
+
+            return (T) method.invoke(null, data);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public T save(final T entity) {
         Map<String, String> params = entity.getRepositoryAttributes();
-        String serialized = AvalonyaAPI.getGson().toJson(entity);
+        String serialized = AvalonyaAPI.getGson().toJson(entity.serialize());
 
         if (entity.isCreated()) {
             if (!getEndpoints().containsKey("update")) {

@@ -51,4 +51,15 @@ public class Player extends AbstractModel {
         return player;
     }
 
+    @Override
+    public Map<String, Object> serialize() {
+        return Map.of(
+                "uuid", this.uuid,
+                "pseudo", this.pseudo,
+                "rank_id", this.rankId,
+                "first_login", this.firstLogin,
+                "last_ip", this.lastIp,
+                "money", this.money
+        );
+    }
 }

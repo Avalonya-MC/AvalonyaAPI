@@ -9,14 +9,15 @@ import java.util.Map;
 public class CitizenRepository extends AbstractRepository<Citizen> {
 
     public CitizenRepository(List<String> vars) {
-        super(vars);
+        super(Citizen.class, vars);
     }
 
     @Override
     public Map<String, Endpoint> getEndpoints() {
         return Map.of(
                 "all", Endpoint.CITIZENS,
-                "create", Endpoint.CITIZENS
+                "create", Endpoint.CITIZENS,
+                "delete", Endpoint.CITIZENS_ID
         );
     }
 }

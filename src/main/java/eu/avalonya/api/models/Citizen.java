@@ -7,6 +7,7 @@ import eu.avalonya.api.items.ItemAccess;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -23,11 +24,18 @@ import java.util.Map;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class Citizen extends AbstractModel {
 
     private String uuid;
     private Town town;
     private long joinedAt;
+
+    public Citizen(String uuid, Town town, long joinedAt) {
+        this.uuid = uuid;
+        this.town = town;
+        this.joinedAt = joinedAt;
+    }
 
     @Override
     public Pair<String, String> getId() {
@@ -45,9 +53,16 @@ public class Citizen extends AbstractModel {
         final Citizen citizen = new Citizen();
 
         citizen.setUuid((String) map.get("uuid"));
-        citizen.setJoinedAt(Long.parseLong((String) map.get("joined_at")));
+        citizen.setJoinedAt(Double.valueOf((double) map.get("joined_at")).longValue());
 
         return citizen;
     }
 
+    @Override
+    public Map<String, Object> serialize() {
+        return Map.of(
+                "uuid", this.uuid,
+                "joined_at", joinedAt
+        );
+    }
 }
