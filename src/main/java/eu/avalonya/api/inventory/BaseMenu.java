@@ -18,13 +18,10 @@ public abstract class BaseMenu extends FastInv
     public final static ItemStack DEFAULT_BORDER_ITEM = new CustomItemStack(Material.BLUE_STAINED_GLASS_PANE, " ");
     public final static ItemStack DEFAULT_BACKGROUND_ITEM = new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, " ");
     public final static ItemStack DEFAULT_CLOSE_ITEM = new CustomItemStack(Material.BARRIER, "§cFermer");
-    public final static ItemStack BACK_ITEM = new CustomItemStack("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY5NzFkZDg4MWRiYWY0ZmQ2YmNhYTkzNjE0NDkzYzYxMmY4Njk2NDFlZDU5ZDFjOTM2M2EzNjY2YTVmYTYifX19", "&fRetour");
-
-    public Map<UUID, List<Inventory>> history;
+    public final static ItemStack BACK_ITEM = new CustomItemStack("86971dd881dbaf4fd6bcaa93614493c612f869641ed59d1c9363a3666a5fa6", "§fRetour");
 
     public BaseMenu(int size, String title) {
         this(size, title, DEFAULT_BORDER_ITEM);
-//        this.history = history;
     }
 
     public BaseMenu(int size, String title, ItemStack borderItem) {
@@ -40,7 +37,7 @@ public abstract class BaseMenu extends FastInv
                 setItem(i, DEFAULT_BACKGROUND_ITEM, e -> e.setCancelled(true));
         }
 
-        setItem(8, DEFAULT_CLOSE_ITEM, e -> e.getInventory().close());
+        setItem(8, DEFAULT_CLOSE_ITEM, e -> this.close(e.getWhoClicked()));
 
         init();
     }
@@ -62,63 +59,57 @@ public abstract class BaseMenu extends FastInv
                 || i % 9 == 0 || (i - 8) % 9 == 0 || i > size - 9)).toArray();
     }
 
-    /*
-    History
-     */
-
-//    public History()
-//    {
-//        this.history = new HashMap<>();
-//    }
-
     public void open(HumanEntity humanEntity)
     {
         Player player = (Player) humanEntity;
 
-//        player.openInventory(inventory);
         super.open(player);
 
-        Inventory inventory = super.getInventory();
+        History.setHistory(player, getInventory());
 
-        if (!history.containsKey(player.getUniqueId()))
+        if (History.getHistory().get(player.getUniqueId()).size() > 1)
         {
-            history.put(player.getUniqueId(), new ArrayList<>());
+            setItem(0, BACK_ITEM, e -> openLast(player));
         }
-        history.get(player.getUniqueId()).add(inventory);
     }
 
-    public void close(Player player)
+    public void close(HumanEntity humanEntity)
     {
-        if (history.containsKey(player.getUniqueId()))
+        Player player = (Player) humanEntity;
+
+        if (History.getHistory().containsKey(player.getUniqueId()))
         {
-            history.remove(player.getUniqueId());
+            History.getHistory().remove(player.getUniqueId());
+            super.getInventory().close();
         }
     }
+
+    /*
+    public void openLast(Player player)
+    {
+        UUID playerUUID = player.getUniqueId();
+
+        int inventoryListSize = History.getHistory().get(playerUUID).size();
+
+        player.sendMessage(inventoryListSize + "         !");
+        if (inventoryListSize > 0){
+            player.openInventory(History.getHistory().get(playerUUID).get(inventoryListSize - 1));
+            History.getHistory().get(playerUUID).remove(inventoryListSize - 1 + 1);
+        }
+
+    }
+
+    */
 
     public void openLast(Player player)
     {
         UUID playerUUID = player.getUniqueId();
 
-        int inventoryListSize = history.get(playerUUID).size();
+        int inventoryListSize = History.getHistory().get(playerUUID).size();
 
-        player.openInventory(history.get(playerUUID).get(inventoryListSize - 1));
-        history.get(playerUUID).removeLast();
-    }
-
-    public void playerCloseInv(InventoryCloseEvent event)
-    {
-        UUID playerUUID = event.getPlayer().getUniqueId();
-
-        if (history.containsKey(playerUUID))
-        {
-            if (!event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW))
-            {
-                history.remove(playerUUID);
-
-            }
-
+        if (inventoryListSize > 1) {
+            player.openInventory(History.getHistory().get(playerUUID).get(inventoryListSize - 2));
+            History.getHistory().get(playerUUID).remove(inventoryListSize - 1);
         }
-
     }
-
 }

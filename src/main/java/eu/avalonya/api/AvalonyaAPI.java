@@ -1,6 +1,7 @@
 package eu.avalonya.api;
 
 import eu.avalonya.api.command.DemoCommand;
+import eu.avalonya.api.inventory.History;
 import eu.avalonya.api.models.AvalonyaDatabase;
 import eu.avalonya.api.sql.MigrationUtils;
 import eu.avalonya.api.sql.SQL;
@@ -10,6 +11,7 @@ import eu.avalonya.api.utils.PermissionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import fr.mrmicky.fastinv.FastInvManager;
+import org.bukkit.event.inventory.HopperInventorySearchEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -50,6 +52,8 @@ public class AvalonyaAPI extends JavaPlugin
             this.getLogger().severe(e.getMessage());
             Bukkit.getPluginManager().disablePlugin(this);
         }
+
+        Bukkit.getPluginManager().registerEvents(new History(), this);
     }
 
     public static AvalonyaDatabase getDb()
