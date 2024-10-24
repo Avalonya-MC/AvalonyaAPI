@@ -1,8 +1,8 @@
-package eu.avalonya.api.models;
+package eu.avalonya.api.models.towny;
 
-import com.j256.ormlite.table.DatabaseTable;
-import eu.avalonya.api.models.enums.PlotPermission;
-import eu.avalonya.api.models.enums.PlotType;
+import eu.avalonya.api.models.AbstractModel;
+import eu.avalonya.api.models.towny.enums.PlotPermission;
+import eu.avalonya.api.models.towny.enums.PlotType;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

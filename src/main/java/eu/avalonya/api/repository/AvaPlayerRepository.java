@@ -1,15 +1,15 @@
 package eu.avalonya.api.repository;
 
 import eu.avalonya.api.http.Endpoint;
-import eu.avalonya.api.models.Player;
+import eu.avalonya.api.models.AvaPlayer;
 
 import java.util.List;
 import java.util.Map;
 
-public class PlayerRepository extends AbstractRepository<Player> {
+public class AvaPlayerRepository extends AbstractRepository<AvaPlayer> {
 
-    public PlayerRepository(List<String> vars) {
-        super(Player.class, vars);
+    public AvaPlayerRepository(List<String> vars) {
+        super(AvaPlayer.class, vars);
     }
 
     @Override

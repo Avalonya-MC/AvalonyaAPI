@@ -15,7 +15,7 @@ import org.bukkit.permissions.Permission;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Player extends AbstractModel {
+public class AvaPlayer extends AbstractModel {
 
     private String uuid;
     private String pseudo;
@@ -79,8 +79,8 @@ public class Player extends AbstractModel {
         return Map.of();
     }
 
-    public static Player deserialize(Map<String, Object> data) {
-        final Player player = new Player();
+    public static AvaPlayer deserialize(Map<String, Object> data) {
+        final AvaPlayer player = new AvaPlayer();
 
         player.setUuid((String) data.get("uuid"));
         player.setPseudo((String) data.get("pseudo"));

@@ -1,7 +1,7 @@
 package eu.avalonya.api.repository;
 
 import eu.avalonya.api.http.Endpoint;
-import eu.avalonya.api.models.Town;
+import eu.avalonya.api.models.towny.Town;
 
 import java.util.List;
 import java.util.Map;

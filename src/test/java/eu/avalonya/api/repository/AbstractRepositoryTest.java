@@ -5,7 +5,7 @@ import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.http.Backend;
 import eu.avalonya.api.http.Endpoint;
 import eu.avalonya.api.http.Response;
-import eu.avalonya.api.models.Citizen;
+import eu.avalonya.api.models.towny.Citizen;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
