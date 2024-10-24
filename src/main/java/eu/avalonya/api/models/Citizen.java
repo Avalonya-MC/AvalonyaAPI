@@ -33,7 +33,7 @@ public class Citizen extends AbstractModel implements ItemAccess {
 
     // Obsolete properties
     private int id;
-    private AvalonyaPlayer avalonyaPlayer;
+    private AvalonyaPlayer player;
     private float money;
     private int role;
     private ItemStack playerHead;
@@ -81,5 +81,18 @@ public class Citizen extends AbstractModel implements ItemAccess {
     @Deprecated
     public void setRole(Role role) {
         this.role = role.ordinal();
+    }
+
+    public Role getRole() {
+        return Role.values()[this.role];
+    }
+
+    public Date getJoinedAt() {
+        return new Date(joinedAt);
+    }
+
+    @Deprecated
+    public boolean isMayor() {
+        return getRole() == Role.MAYOR;
     }
 }
