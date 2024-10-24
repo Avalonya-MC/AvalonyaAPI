@@ -25,11 +25,18 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Citizen extends AbstractModel {
+public class Citizen extends AbstractModel implements ItemAccess {
 
     private String uuid;
     private Town town;
     private long joinedAt;
+
+    // Obsolete properties
+    private int id;
+    private AvalonyaPlayer avalonyaPlayer;
+    private float money;
+    private int role;
+    private ItemStack playerHead;
 
     public Citizen(String uuid, Town town, long joinedAt) {
         this.uuid = uuid;
@@ -64,5 +71,15 @@ public class Citizen extends AbstractModel {
                 "uuid", this.uuid,
                 "joined_at", joinedAt
         );
+    }
+
+    @Override
+    public ItemStack toItemStack() {
+        return null;
+    }
+
+    @Deprecated
+    public void setRole(Role role) {
+        this.role = role.ordinal();
     }
 }
