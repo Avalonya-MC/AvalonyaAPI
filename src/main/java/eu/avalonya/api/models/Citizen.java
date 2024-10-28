@@ -28,7 +28,7 @@ import java.util.Map;
 public class Citizen extends AbstractModel implements ItemAccess {
 
     private String uuid;
-    private Town town;
+    private long townId;
     private long joinedAt;
 
     // Obsolete properties
@@ -40,7 +40,7 @@ public class Citizen extends AbstractModel implements ItemAccess {
 
     public Citizen(String uuid, Town town, long joinedAt) {
         this.uuid = uuid;
-        this.town = town;
+        this.townId = town.getPermissions(); // TODO: Mettre le vrais ID
         this.joinedAt = joinedAt;
     }
 
@@ -60,6 +60,7 @@ public class Citizen extends AbstractModel implements ItemAccess {
         final Citizen citizen = new Citizen();
 
         citizen.setUuid((String) map.get("uuid"));
+        citizen.setTownId(Double.valueOf((double) map.get("town_id")).longValue());
         citizen.setJoinedAt(Double.valueOf((double) map.get("joined_at")).longValue());
 
         return citizen;
@@ -94,5 +95,9 @@ public class Citizen extends AbstractModel implements ItemAccess {
     @Deprecated
     public boolean isMayor() {
         return getRole() == Role.MAYOR;
+    }
+
+    public Town getTown() {
+        return null; // TODO: Chercher dans le cache
     }
 }

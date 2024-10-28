@@ -11,6 +11,7 @@ import eu.avalonya.api.models.AbstractModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
     private final Class<T> clazz;
     private final List<String> vars;
+    private static Map<String, Map<Object, Object>> items = new HashMap<>();
 
     public AbstractRepository(Class<T> clazz, List<String> vars) {
         this.vars = vars;
@@ -40,8 +42,10 @@ public abstract class AbstractRepository<T extends AbstractModel> {
         for (Map<String, Object> data : objs) {
             try {
                 Method method = this.clazz.getMethod("deserialize", Map.class);
+                T model = (T) method.invoke(null, data);
 
-                models.add((T) method.invoke(null, data));
+                putInCache(model);
+                models.add(model);
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -64,8 +68,10 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
         try {
             Method method = this.clazz.getMethod("deserialize", Map.class);
+            T model = (T) method.invoke(null, data);
 
-            return (T) method.invoke(null, data);
+            putInCache(model);
+            return model;
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -97,6 +103,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             entity.setCreated(true);
         }
 
+        putInCache(entity);
         return entity;
     }
 
@@ -111,7 +118,22 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
         Endpoint endpoint = Endpoint.bind(getEndpoints().get("delete"), params);
 
+        deleteInCache(entity);
         Backend.delete(endpoint);
+    }
+
+    private void putInCache(T entity) {
+        if (!items.containsKey(getClass().getSimpleName())) {
+            items.put(getClass().getSimpleName(), new HashMap<>());
+        }
+
+        items.get(getClass().getSimpleName()).put(entity.getId().value(), entity);
+    }
+
+    private void deleteInCache(T entity) {
+        if (items.containsKey(getClass().getSimpleName())) {
+            items.get(getClass().getSimpleName()).remove(entity.getId().value());
+        }
     }
 
     public abstract Map<String, Endpoint> getEndpoints();
