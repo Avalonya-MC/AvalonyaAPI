@@ -5,8 +5,6 @@ import fr.mrmicky.fastinv.FastInv;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -44,9 +42,6 @@ public abstract class BaseMenu extends FastInv
 
     public abstract void init();
 
-//    public void open(HumanEntity humanEntity) {
-//        super.open((Player) humanEntity);
-//    }
 
     public int[] getContent() {
         int size = this.getInventory().getSize();
@@ -73,6 +68,7 @@ public abstract class BaseMenu extends FastInv
         }
     }
 
+    //Close l'inventaire et supprime l'historique du joueur
     public void close(HumanEntity humanEntity)
     {
         Player player = (Player) humanEntity;
@@ -84,23 +80,8 @@ public abstract class BaseMenu extends FastInv
         }
     }
 
-    /*
-    public void openLast(Player player)
-    {
-        UUID playerUUID = player.getUniqueId();
 
-        int inventoryListSize = History.getHistory().get(playerUUID).size();
-
-        player.sendMessage(inventoryListSize + "         !");
-        if (inventoryListSize > 0){
-            player.openInventory(History.getHistory().get(playerUUID).get(inventoryListSize - 1));
-            History.getHistory().get(playerUUID).remove(inventoryListSize - 1 + 1);
-        }
-
-    }
-
-    */
-
+    //Ouvrir l'inventaire précédent
     public void openLast(Player player)
     {
         UUID playerUUID = player.getUniqueId();

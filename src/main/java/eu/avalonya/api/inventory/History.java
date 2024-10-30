@@ -13,11 +13,14 @@ public class History implements Listener
 
     private static Map<UUID, List<Inventory>> history = new HashMap<>();
 
-    public History()
+    public History() {}
+
+    public static Map<UUID, List<Inventory>> getHistory()
     {
-        this.history = new HashMap<>();
+        return history;
     }
 
+    //Verifier si l'historique contient le joueur et si non le rajouter avec l'invantaire actuel
     public static void setHistory(Player player, Inventory inventory)
     {
         UUID playerUUID = player.getUniqueId();
@@ -30,29 +33,8 @@ public class History implements Listener
         history.get(playerUUID).add(inventory);
     }
 
-    public static Map<UUID, List<Inventory>> getHistory()
-    {
-        return history;
-    }
 
-    public void close(Player player)
-    {
-        if (history.containsKey(player.getUniqueId()))
-        {
-            history.remove(player.getUniqueId());
-        }
-    }
-
-    public void openLast(Player player)
-    {
-        UUID playerUUID = player.getUniqueId();
-
-        int inventoryListSize = history.get(playerUUID).size();
-
-        player.openInventory(history.get(playerUUID).get(inventoryListSize - 1));
-        history.get(playerUUID).removeLast();
-    }
-
+    //Verifier si l'invantaire est fermer puis qu'il en ouvre un nouveux si oui l'historique du joueur est supprimer
     @EventHandler
     public void playerCloseInv(InventoryCloseEvent event)
     {
