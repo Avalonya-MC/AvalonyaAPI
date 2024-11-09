@@ -20,7 +20,9 @@ public class History implements Listener
         return history;
     }
 
-    //Verifier si l'historique contient le joueur et si non le rajouter avec l'invantaire actuel
+    /**
+    *   Verifier si l'historique contient le joueur et si non le rajouter avec l'invantaire actuel
+    */
     public static void setHistory(Player player, Inventory inventory)
     {
         UUID playerUUID = player.getUniqueId();
@@ -33,8 +35,9 @@ public class History implements Listener
         history.get(playerUUID).add(inventory);
     }
 
-
-    //Verifier si l'invantaire est fermer puis qu'il en ouvre un nouveux si oui l'historique du joueur est supprimer
+    /**
+    *   Verifier si l'invantaire est fermer puis qu'il en ouvre un nouveux si oui l'historique du joueur est supprimer
+    */
     @EventHandler
     public void playerCloseInv(InventoryCloseEvent event)
     {

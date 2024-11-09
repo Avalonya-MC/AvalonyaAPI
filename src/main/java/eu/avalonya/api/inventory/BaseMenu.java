@@ -68,7 +68,9 @@ public abstract class BaseMenu extends FastInv
         }
     }
 
-    //Close l'inventaire et supprime l'historique du joueur
+    /*
+    *   Close l'inventaire et supprime l'historique du joueur
+    */
     public void close(HumanEntity humanEntity)
     {
         Player player = (Player) humanEntity;
@@ -81,7 +83,9 @@ public abstract class BaseMenu extends FastInv
     }
 
 
-    //Ouvrir l'inventaire précédent
+    /**
+    *   Ouvrir l'inventaire précédent
+    */
     public void openLast(Player player)
     {
         UUID playerUUID = player.getUniqueId();
