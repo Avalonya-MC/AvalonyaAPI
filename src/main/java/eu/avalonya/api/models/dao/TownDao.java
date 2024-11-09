@@ -15,7 +15,8 @@ public class TownDao
 
     public static Town create(String name, Player player) throws SQLException, CitizenAlreadyHasTownException
     {
-        Town town = new Town(name);
+        Town town = new Town();
+        town.setName(name);
         Citizen mayor = CitizenDao.find(player);
 
         town.setSpawnLocation(player.getLocation().toString());
