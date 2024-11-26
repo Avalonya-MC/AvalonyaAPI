@@ -13,7 +13,7 @@ public class CitizenDao
     public static Citizen create(Player player, Town town) throws SQLException
     {
         AvalonyaPlayer avalonyaPlayer = PlayerAvalonyaDao.getAvalonyaPlayer(player);
-        Citizen citizen = new Citizen(avalonyaPlayer);
+        Citizen citizen = new Citizen(avalonyaPlayer.getUuid(), town, System.currentTimeMillis());
 
         citizen.setTown(town);
         AvalonyaDatabase.getCitizenDao().create(citizen);
@@ -24,7 +24,7 @@ public class CitizenDao
     public static void create(Player player, Town town, Role role) throws SQLException
     {
         AvalonyaPlayer avalonyaPlayer = PlayerAvalonyaDao.getAvalonyaPlayer(player);
-        Citizen citizen = new Citizen(avalonyaPlayer);
+        Citizen citizen = new Citizen(avalonyaPlayer.getUuid(), town, System.currentTimeMillis());
 
         citizen.setTown(town);
         citizen.setRole(role);
