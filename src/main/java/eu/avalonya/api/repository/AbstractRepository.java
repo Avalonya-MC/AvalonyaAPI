@@ -11,6 +11,7 @@ import eu.avalonya.api.models.AbstractModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
     private final Class<T> clazz;
     private final List<String> vars;
+    protected static Map<String, List<AbstractModel>> cache = new HashMap<>();
 
     public AbstractRepository(Class<T> clazz, List<String> vars) {
         this.vars = vars;
@@ -28,6 +30,10 @@ public abstract class AbstractRepository<T extends AbstractModel> {
     public List<T> all() {
         if (!getEndpoints().containsKey("all")) {
             throw new RuntimeException("You cannot all this model.");
+        }
+
+        if (cache.containsKey(this.getClass().getSimpleName())) {
+            return (List<T>) cache.get(this.getClass().getSimpleName());
         }
 
         Endpoint endpoint = Endpoint.bind(getEndpoints().get("all"), this.vars);
@@ -41,7 +47,10 @@ public abstract class AbstractRepository<T extends AbstractModel> {
             try {
                 Method method = this.clazz.getMethod("deserialize", Map.class);
 
-                models.add((T) method.invoke(null, data));
+                T model = (T) method.invoke(null, data);
+
+                this.putInCache(model);
+                models.add(model);
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -54,6 +63,16 @@ public abstract class AbstractRepository<T extends AbstractModel> {
     public T get(final String id) {
         if (!getEndpoints().containsKey("get")) {
             throw new RuntimeException("You cannot get this model.");
+        }
+
+        if (cache.containsKey(this.getClass().getSimpleName())) {
+            T model = (T) cache.get(this.getClass().getSimpleName()).stream().filter(
+                    abstractModel -> abstractModel.getId().value().equals(id)
+            ).findFirst().orElse(null);
+
+            if (model != null) {
+                return model;
+            }
         }
 
         Endpoint endpoint = Endpoint.bind(getEndpoints().get("get"), this.vars);
@@ -118,5 +137,13 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
     protected Gson gson() {
         return AvalonyaAPI.getGson();
+    }
+
+    protected void putInCache(final T entity) {
+        List<AbstractModel> list = cache.getOrDefault(this.getClass().getSimpleName(), new ArrayList<>());
+
+        list.add(entity);
+
+        cache.put(this.getClass().getSimpleName(), list);
     }
 }

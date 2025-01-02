@@ -36,7 +36,9 @@ public class Town extends AbstractModel implements ItemStackAdapter {
     private Date createdAt;
 
     public CitizenRepository getCitizens() {
-        return new CitizenRepository(List.of(this.name));
+        return new CitizenRepository(
+                List.of(this.name)
+        );
     }
 
     public float deposit(float amount) {

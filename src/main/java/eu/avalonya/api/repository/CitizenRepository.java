@@ -20,4 +20,14 @@ public class CitizenRepository extends AbstractRepository<Citizen> {
                 "delete", Endpoint.CITIZENS_ID
         );
     }
+
+    public static Citizen findById(String id) {
+        if (!cache.containsKey(Citizen.class.getSimpleName())) {
+            return null;
+        }
+
+        return (Citizen) cache.get(Citizen.class.getSimpleName()).stream().filter(
+                abstractModel -> abstractModel.getId().value().equals(id)
+        ).findFirst().orElse(null);
+    }
 }

@@ -3,6 +3,7 @@ package eu.avalonya.api.models.towny;
 import eu.avalonya.api.items.ItemStackAdapter;
 import eu.avalonya.api.models.AbstractModel;
 import eu.avalonya.api.models.AvaPlayer;
+import eu.avalonya.api.repository.CitizenRepository;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -77,6 +78,10 @@ public class Citizen extends AbstractModel implements ItemStackAdapter {
 
     public boolean isMayor() {
         return this.getTown().getMayor().getId().value().equals(this.uuid);
+    }
+
+    public static Citizen of(AvaPlayer player) {
+        return CitizenRepository.findById(player.getUuid());
     }
 
 }
