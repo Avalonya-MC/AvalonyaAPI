@@ -9,6 +9,7 @@ import eu.avalonya.api.utils.CustomConfigFile;
 import eu.avalonya.api.utils.PermissionManager;
 import lombok.Getter;
 import fr.mrmicky.fastinv.FastInvManager;
+import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.HopperInventorySearchEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
