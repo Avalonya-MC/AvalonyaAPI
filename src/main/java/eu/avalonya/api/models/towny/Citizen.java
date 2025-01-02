@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Date;
@@ -80,8 +81,11 @@ public class Citizen extends AbstractModel implements ItemStackAdapter {
         return this.getTown().getMayor().getId().value().equals(this.uuid);
     }
 
-    public static Citizen of(AvaPlayer player) {
+    public static Citizen from(AvaPlayer player) {
         return CitizenRepository.findById(player.getUuid());
     }
 
+    public static Citizen from(Player player) {
+        return CitizenRepository.findById(player.getUniqueId().toString());
+    }
 }

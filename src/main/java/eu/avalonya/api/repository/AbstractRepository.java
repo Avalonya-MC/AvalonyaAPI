@@ -146,4 +146,8 @@ public abstract class AbstractRepository<T extends AbstractModel> {
 
         cache.put(this.getClass().getSimpleName(), list);
     }
+
+    public static void clearCache() {
+        cache.clear();
+    }
 }

@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import eu.avalonya.api.AvalonyaAPI;
+import eu.avalonya.api.repository.AvaPlayerRepository;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 @Getter
@@ -102,5 +104,9 @@ public class AvaPlayer extends AbstractModel {
                 "last_ip", this.lastIp,
                 "money", this.money
         );
+    }
+
+    public static AvaPlayer of(Player player) {
+        return AvaPlayerRepository.findById(player.getUniqueId().toString());
     }
 }

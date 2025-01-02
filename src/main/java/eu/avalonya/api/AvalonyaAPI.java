@@ -10,7 +10,6 @@ import eu.avalonya.api.utils.PermissionManager;
 import lombok.Getter;
 import fr.mrmicky.fastinv.FastInvManager;
 import org.bukkit.Bukkit;
-import org.bukkit.event.inventory.HopperInventorySearchEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -40,6 +39,12 @@ public class AvalonyaAPI extends JavaPlugin
         try {
             FastInvManager.register(this);
         } catch (Exception ignored) {}
+    }
+
+    public static TownRepository towns() {
+        return new TownRepository(
+                List.of()
+        );
     }
 
 }

@@ -46,11 +46,13 @@ class AbstractRepositoryTest {
 
     @AfterEach
     void tearDown() {
+        AbstractRepository.clearCache();
         MockBukkit.unmock();
     }
 
     @Test
     void testGetAll() {
+        System.out.println(this.repository.all());
         assertEquals(1, this.repository.all().size());
     }
 

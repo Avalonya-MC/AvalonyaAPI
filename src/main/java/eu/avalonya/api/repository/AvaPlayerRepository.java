@@ -23,5 +23,13 @@ public class AvaPlayerRepository extends AbstractRepository<AvaPlayer> {
         );
     }
 
+    public static AvaPlayer findById(String id) {
+        if (!cache.containsKey(AvaPlayer.class.getSimpleName())) {
+            return null;
+        }
 
+        return (AvaPlayer) cache.get(AvaPlayer.class.getSimpleName()).stream().filter(
+                abstractModel -> abstractModel.getId().value().equals(id)
+        ).findFirst().orElse(null);
+    }
 }

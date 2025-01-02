@@ -134,7 +134,7 @@ public class Town extends AbstractModel implements ItemStackAdapter {
     }
 
     public Citizen getMayor() {
-        return this.getCitizens().all().getFirst(); // TODO: Changer le comportement pour prendre le citoyens qui possede le role de maire
+        return this.getCitizens().all().get(0); // TODO: Changer le comportement pour prendre le citoyens qui possede le role de maire
     }
 
     @Deprecated
