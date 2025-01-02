@@ -2,12 +2,14 @@ package eu.avalonya.api;
 
 import com.google.gson.Gson;
 import eu.avalonya.api.command.DemoCommand;
+import eu.avalonya.api.inventory.History;
 import eu.avalonya.api.repository.AvaPlayerRepository;
 import eu.avalonya.api.repository.TownRepository;
 import eu.avalonya.api.utils.CustomConfigFile;
 import eu.avalonya.api.utils.PermissionManager;
 import lombok.Getter;
 import fr.mrmicky.fastinv.FastInvManager;
+import org.bukkit.event.inventory.HopperInventorySearchEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -31,6 +33,8 @@ public class AvalonyaAPI extends JavaPlugin
         new DemoCommand().register(this);
 
         PermissionManager.loadPermissionsFromConfigFileToCache();
+        
+        Bukkit.getPluginManager().registerEvents(new History(), this);
 
         try {
             FastInvManager.register(this);
