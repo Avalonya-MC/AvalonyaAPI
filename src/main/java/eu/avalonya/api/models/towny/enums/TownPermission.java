@@ -1,4 +1,4 @@
-package eu.avalonya.api.models.enums;
+package eu.avalonya.api.models.towny.enums;
 
 public enum TownPermission {
     TAXES,

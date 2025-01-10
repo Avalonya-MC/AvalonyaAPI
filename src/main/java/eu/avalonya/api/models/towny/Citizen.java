@@ -1,20 +1,15 @@
-package eu.avalonya.api.models;
+package eu.avalonya.api.models.towny;
 
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-import eu.avalonya.api.items.ItemAccess;
+import eu.avalonya.api.items.ItemStackAdapter;
+import eu.avalonya.api.models.AbstractModel;
+import eu.avalonya.api.models.AvaPlayer;
+import eu.avalonya.api.repository.CitizenRepository;
 import it.unimi.dsi.fastutil.Pair;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Date;
 import java.util.Map;
@@ -25,7 +20,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Citizen extends AbstractModel implements ItemAccess {
+public class Citizen extends AbstractModel implements ItemStackAdapter {
 
     private String uuid;
     private Town town;
@@ -33,7 +28,7 @@ public class Citizen extends AbstractModel implements ItemAccess {
 
     // Obsolete properties
     private int id;
-    private AvalonyaPlayer player;
+    private AvaPlayer player;
     private float money;
     private int role;
     private ItemStack playerHead;
@@ -78,21 +73,19 @@ public class Citizen extends AbstractModel implements ItemAccess {
         return null;
     }
 
-    @Deprecated
-    public void setRole(Role role) {
-        this.role = role.ordinal();
-    }
-
-    public Role getRole() {
-        return Role.values()[this.role];
-    }
-
     public Date getJoinedAt() {
         return new Date(joinedAt);
     }
 
-    @Deprecated
     public boolean isMayor() {
-        return getRole() == Role.MAYOR;
+        return this.getTown().getMayor().getId().value().equals(this.uuid);
+    }
+
+    public static Citizen from(AvaPlayer player) {
+        return CitizenRepository.findById(player.getUuid());
+    }
+
+    public static Citizen from(Player player) {
+        return CitizenRepository.findById(player.getUniqueId().toString());
     }
 }

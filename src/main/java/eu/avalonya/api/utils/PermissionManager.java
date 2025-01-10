@@ -2,7 +2,7 @@ package eu.avalonya.api.utils;
 
 import eu.avalonya.api.AvalonyaAPI;
 import eu.avalonya.api.models.Rank;
-import eu.avalonya.api.sql.Cache;
+import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -1,11 +1,8 @@
-package eu.avalonya.api.models;
+package eu.avalonya.api.models.towny;
 
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-import eu.avalonya.api.items.ItemAccess;
-import eu.avalonya.api.models.dao.PlotDao;
-import eu.avalonya.api.models.enums.TownPermission;
+import eu.avalonya.api.items.ItemStackAdapter;
+import eu.avalonya.api.models.AbstractModel;
+import eu.avalonya.api.models.towny.enums.TownPermission;
 import eu.avalonya.api.repository.CitizenRepository;
 import eu.avalonya.api.repository.PlotRepository;
 import it.unimi.dsi.fastutil.Pair;
@@ -19,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -28,7 +24,7 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Town extends AbstractModel implements ItemAccess {
+public class Town extends AbstractModel implements ItemStackAdapter {
 
     private int id;
     private String name;
@@ -40,7 +36,9 @@ public class Town extends AbstractModel implements ItemAccess {
     private Date createdAt;
 
     public CitizenRepository getCitizens() {
-        return new CitizenRepository(List.of(this.name));
+        return new CitizenRepository(
+                List.of(this.name)
+        );
     }
 
     public float deposit(float amount) {
@@ -68,48 +66,31 @@ public class Town extends AbstractModel implements ItemAccess {
     }
 
     /**
-     * Action que peut effectuer une ville sur un chunk.
-     * Ainsi une sertraine action peut être effectuée sur un chunk.
      * @param player le joueur essayant de revendiquer le chunk
      * @param chunk le chunk visé
      */
-    public void claim(Player player, Chunk chunk)
-    {
-        try
-        {
-            if (PlotDao.isClaimed(chunk))
-            {
-                player.sendMessage(Component.text("§cCe chunk est déjà revendiqué."));
-                return;
-            }
+    public void claim(Player player, Chunk chunk) {
+        // TODO:
+        //  - Verifier si le joueur a la permission pour faire ceci
+        //  - Verifier si le chunk n'est pas deja claim
 
-            this.getPlots().save(new Plot(chunk, this));
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace(); // TODO: Utiliser le logger
-        }
+        Plot plot = new Plot(chunk, this);
+
+        this.addPlot(plot);
     }
 
     /**
-     * Supprime un chunk de la ville.
      * @param chunk le chunk à supprimer
      */
-    public void unclaim(Player player, Chunk chunk)
-    {
-        try
-        {
-            if (!PlotDao.hasTown(chunk, this))
-            {
-                player.sendMessage(Component.text("§cCe chunk n'appartient pas à votre ville."));
-                return;
-            }
+    public void unclaim(Player player, Chunk chunk) {
+        // TODO:
+        //  - Verifier si le joueur a la permission pour faire ceci
+        //  - Verifier que le chunk est bien claim par la ville
 
-            PlotDao.delete(chunk);
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace(); // TODO: Utiliser le logger
+        Plot plot = this.getPlots().get(String.format("%d-%d", chunk.getX(), chunk.getZ())); // TODO : Faire les changement necessaire pour que l'id d'un plot soit "x-y"
+
+        if (plot != null) {
+            this.getPlots().delete(plot);
         }
     }
 
@@ -152,13 +133,16 @@ public class Town extends AbstractModel implements ItemAccess {
         );
     }
 
-    @Deprecated
     public Citizen getMayor() {
-        return null;
+        return this.getCitizens().all().get(0); // TODO: Changer le comportement pour prendre le citoyens qui possede le role de maire
     }
 
     @Deprecated
-    public void addPlot(Chunk chunk) {
+    public void addPlot(Plot plot) {
+        this.getPlots().save(plot);
+    }
 
+    public static Town of(Player player) {
+        return null;
     }
 }

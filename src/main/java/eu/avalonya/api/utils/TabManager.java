@@ -1,7 +1,8 @@
 package eu.avalonya.api.utils;
 
-import eu.avalonya.api.models.AvalonyaPlayer;
+import eu.avalonya.api.models.AvaPlayer;
 import eu.avalonya.api.models.Rank;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.NameTagVisibility;
@@ -33,12 +34,14 @@ public class TabManager
         return instance;
     }
 
-    public void setTabRank(AvalonyaPlayer avalonyaPlayer)
+    public void setTabRank(AvaPlayer avaPlayer)
     {
-        Rank rank = avalonyaPlayer.getRank();
-        Player player = avalonyaPlayer.getPlayer();
+        Rank rank = avaPlayer.getRank();
+        Player player = avaPlayer.getBukkitPlayer();
         scoreboard.getTeam(rank.getOrderTab()).addPlayer(player);
-        player.setDisplayName(MessageUtils.convertColor(avalonyaPlayer.getRank().getPrefixTab() + player.getName()));
+        player.displayName(Component.text(
+                MessageUtils.convertColor(avaPlayer.getRank().getPrefixTab() + player.getName())
+        ));
         updateTab();
     }
 

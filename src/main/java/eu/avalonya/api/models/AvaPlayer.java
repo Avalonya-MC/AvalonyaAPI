@@ -5,17 +5,19 @@ import java.util.List;
 import java.util.Map;
 
 import eu.avalonya.api.AvalonyaAPI;
+import eu.avalonya.api.repository.AvaPlayerRepository;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class Player extends AbstractModel {
+public class AvaPlayer extends AbstractModel {
 
     private String uuid;
     private String pseudo;
@@ -79,8 +81,8 @@ public class Player extends AbstractModel {
         return Map.of();
     }
 
-    public static Player deserialize(Map<String, Object> data) {
-        final Player player = new Player();
+    public static AvaPlayer deserialize(Map<String, Object> data) {
+        final AvaPlayer player = new AvaPlayer();
 
         player.setUuid((String) data.get("uuid"));
         player.setPseudo((String) data.get("pseudo"));
@@ -102,5 +104,9 @@ public class Player extends AbstractModel {
                 "last_ip", this.lastIp,
                 "money", this.money
         );
+    }
+
+    public static AvaPlayer of(Player player) {
+        return AvaPlayerRepository.findById(player.getUniqueId().toString());
     }
 }
